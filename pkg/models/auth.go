@@ -1,6 +1,8 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type UserDetail struct {
 	gorm.Model
@@ -10,5 +12,9 @@ type UserDetail struct {
 	Name           string `json:"name"`
 	IsUserVerified bool   `json:"is_user_verified"`
 	Role           string `json:"role"`
-	AccessToken    string `json:"access_token"`
+}
+
+func (x *UserDetail) SetVerificationProperties() {
+	x.IsUserVerified = false
+	x.Role = "user"
 }

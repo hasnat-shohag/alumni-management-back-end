@@ -38,3 +38,33 @@ func initConfig() *Config {
 func SetConfig() {
 	LocalConfig = initConfig()
 }
+
+// SMTPConfig is a struct that defines the configuration for the SMTP server.
+type SMTPConfig struct {
+	Host       string `mapstructure:"SMTP_HOST"`
+	Port       string `mapstructure:"SMTP_PORT"`
+	Username   string `mapstructure:"SMTP_USERNAME"`
+	Password   string `mapstructure:"SMTP_PASSWORD"`
+	AdminEmail string `mapstructure:"ADMIN_EMAIL"`
+}
+
+// InitSMTPConfig initializes the SMTP configuration.
+func InitSMTPConfig() *SMTPConfig {
+	viper.AddConfigPath(".")
+	viper.SetConfigName("base")
+	viper.SetConfigType("env")
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatal("Error reading env file ", err)
+	}
+
+	var smtpConfig *SMTPConfig
+	if err := viper.Unmarshal(&smtpConfig); err != nil {
+		log.Fatal("Error reading env file", err)
+	}
+
+	return smtpConfig
+}
+
+var LocalSMTPConfig = InitSMTPConfig()
