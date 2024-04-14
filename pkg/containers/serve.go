@@ -22,16 +22,21 @@ func Serve(e *echo.Echo) {
 
 	// repository initialization
 	userRepository := repositories.UserDBInstance(db)
+	adminRepository := repositories.AdminDBInstance(db)
 
 	// service initialization
 	userService := services.AuthServiceInstance(userRepository)
+	adminService := services.NewAdminService(adminRepository)
 
 	// controller initialization
 	userController := controllers.NewAuthController(userService)
+	adminController := controllers.NewAdminController(adminService)
 
 	// route initialization
 	userRoutes := routes.NewAuthRoutes(e, userController)
+	adminRoutes := routes.NewAdminRoutes(e, adminController)
 	userRoutes.InitAuthRoutes()
+	adminRoutes.InitAdminRoutes()
 
 	// starting server
 	log.Fatal(e.Start(fmt.Sprintf(":%s", config.LocalConfig.Port)))
