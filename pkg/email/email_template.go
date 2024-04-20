@@ -11,9 +11,11 @@ type AdminNotificationData struct {
 }
 
 const (
-	UserVerificationSubject  = "Account Verification"
-	AdminNotificationSubject = "New User Registration"
-	UserVerificationTemplate = `
+	UserVerificationSubject    = "Account Verification"
+	AdminNotificationSubject   = "New User Registration"
+	UserVerificationSuccess    = "User Verification Successful"
+	UserVerificationsUnsuccess = "User Verification Unsuccessful"
+	UserVerificationTemplate   = `
 	Hello,
 	
 	Thank you for creating an account. Our admin will verify your information shortly. Please wait for the verification process to complete.
@@ -46,6 +48,14 @@ const (
 	  <p>ICE alumni management Team</p>
 	</body>
 	</html>
+	`
+	UserVerificationSuccessTemplate = `
+		Dear User,
+		Your account has been verified successfully. You can now login to your account.
+	`
+	UserVerficationUnsuccessTemplate = `
+		Dear User,
+		Your account verification was unsuccessful. Please create account with valid information.	
 	`
 )
 

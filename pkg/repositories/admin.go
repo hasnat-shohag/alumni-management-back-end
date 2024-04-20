@@ -30,3 +30,11 @@ func (repo *adminRepo) VerifyUser(studentId string) error {
 
 	return nil
 }
+
+func (repo *adminRepo) FindUserByStudentId(studentId string) (models.UserDetail, error) {
+	user := &models.UserDetail{}
+	if err := repo.db.Where("student_id = ?", studentId).First(user).Error; err != nil {
+		return *user, err
+	}
+	return *user, nil
+}
