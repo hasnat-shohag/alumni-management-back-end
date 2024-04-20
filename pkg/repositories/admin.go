@@ -17,15 +17,23 @@ func AdminDBInstance(d *gorm.DB) domain.IAdminRepo {
 	}
 }
 
-func (repo *adminRepo) VerifyUser(studentId string) error {
+func (repo *adminRepo) VerifyUser(studentId string, isValid bool) error {
 	user := &models.UserDetail{}
 	if err := repo.db.Where("student_id = ?", studentId).First(user).Error; err != nil {
 		return err
 	}
 
-	user.IsUserVerified = true
-	if err := repo.db.Save(user).Error; err != nil {
-		return err
+	if isValid == true {
+		user.IsUserVerified = true
+		if err := repo.db.Save(user).Error; err != nil {
+			return err
+		}
+	} else {
+		user.IsUserVerified = false
+		if err := repo.db.Delete(user).Error; err != nil {
+			return err
+		}
+
 	}
 
 	return nil

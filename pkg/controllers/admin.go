@@ -4,6 +4,7 @@ import (
 	"alumni-management-server/pkg/domain"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strconv"
 )
 
 // IAdminController is an interface that defines the methods implemented by the AdminController struct.
@@ -23,9 +24,15 @@ func NewAdminController(adminSvc domain.IAdminService) AdminController {
 }
 
 func (adminController *AdminController) VerifyUser(c echo.Context) error {
-	studentId := c.Param("studentId")
+	studentId := c.QueryParam("student_id")
+	isValidSting := c.QueryParam("is_valid")
+	isValid, err := strconv.ParseBool(isValidSting)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid value for is_valid")
+	}
+
 	// pass the request to the service layer
-	if err := adminController.AdminSvc.VerifyUser(studentId); err != nil {
+	if err := adminController.AdminSvc.VerifyUser(studentId, isValid); err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 

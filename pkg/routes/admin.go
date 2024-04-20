@@ -23,5 +23,5 @@ func NewAdminRoutes(echo *echo.Echo, adminCtr controllers.AdminController) *Admi
 func (routes *AdminRoutes) InitAdminRoutes() {
 	e := routes.echo
 	admin := e.Group("/admin")
-	admin.POST("/verify-user/:studentId", routes.adminCtr.VerifyUser)
+	admin.POST("/verify-user/", routes.adminCtr.VerifyUser)
 }

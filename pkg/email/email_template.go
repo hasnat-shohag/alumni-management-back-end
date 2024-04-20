@@ -11,11 +11,11 @@ type AdminNotificationData struct {
 }
 
 const (
-	UserVerificationSubject    = "Account Verification"
-	AdminNotificationSubject   = "New User Registration"
-	UserVerificationSuccess    = "User Verification Successful"
-	UserVerificationsUnsuccess = "User Verification Unsuccessful"
-	UserVerificationTemplate   = `
+	UserVerificationSubject  = "Account Verification"
+	AdminNotificationSubject = "New User Registration"
+	UserVerificationSuccess  = "User Verification Successful"
+	UserVerificationFailed   = "User Verification Unsuccessful"
+	UserVerificationTemplate = `
 	Hello,
 	
 	Thank you for creating an account. Our admin will verify your information shortly. Please wait for the verification process to complete.
@@ -50,10 +50,12 @@ const (
 	</html>
 	`
 	UserVerificationSuccessTemplate = `
+		
 		Dear User,
 		Your account has been verified successfully. You can now login to your account.
 	`
-	UserVerficationUnsuccessTemplate = `
+
+	UserVerificationFailedTemplate = `
 		Dear User,
 		Your account verification was unsuccessful. Please create account with valid information.	
 	`
