@@ -42,3 +42,16 @@ func (repo *userRepo) CreateUser(user *models.UserDetail) error {
 	}
 	return nil
 }
+
+func (repo *userRepo) FindAuthorizedUserByEmailOrStudentId(value interface{}) (*models.UserDetail, error) {
+	user := &models.UserDetail{}
+	if err := repo.db.Where("student_id = ? OR email = ?", value, value).First(user).Error; err != nil {
+		return nil, err
+	}
+
+	if user.IsUserVerified == false {
+		return nil, &customerror.UserNotVerifiedError{}
+	}
+
+	return user, nil
+}

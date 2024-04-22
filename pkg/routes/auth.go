@@ -24,4 +24,5 @@ func (routes *AuthRoutes) InitAuthRoutes() {
 	e := routes.echo
 	auth := e.Group("/auth")
 	auth.POST("/sign-up", routes.authCtr.Signup)
+	auth.POST("/login", routes.authCtr.Login)
 }

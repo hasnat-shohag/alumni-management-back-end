@@ -18,3 +18,9 @@ func (e *EmailExistsError) Error() string {
 	fmt.Println(e.Email)
 	return fmt.Sprintf("Email %s already exists", e.Email)
 }
+
+type UserNotVerifiedError struct{}
+
+func (e *UserNotVerifiedError) Error() string {
+	return "Please wait until verified"
+}

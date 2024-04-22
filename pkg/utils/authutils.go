@@ -21,15 +21,15 @@ func CheckPassword(passwordHash, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(password))
 }
 
-// GetJwtForUser returns the JWT for the user using username.
-func GetJwtForUser(username string) (string, error) {
+// GetJwtForUser returns the JWT for the user using studentId.
+func GetJwtForUser(studentId string) (string, error) {
 	now := time.Now().UTC()
 	ttl := time.Minute * time.Duration(config.LocalConfig.JwtExpireMinutes)
 	claims := jwt.StandardClaims{
 		ExpiresAt: now.Add(ttl).Unix(),
 		IssuedAt:  now.Unix(),
 		NotBefore: now.Unix(),
-		Subject:   username,
+		Subject:   studentId,
 	}
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(config.LocalConfig.JwtSecret))
 	if err != nil {

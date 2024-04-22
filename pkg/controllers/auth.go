@@ -3,6 +3,7 @@ package controllers
 import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/types"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -42,4 +43,23 @@ func (authController *AuthController) Signup(e echo.Context) error {
 	}
 
 	return e.JSON(http.StatusCreated, "user was created successfully")
+}
+
+func (authController *AuthController) Login(e echo.Context) error {
+	loginRequest := &types.LoginRequest{}
+	if err := e.Bind(loginRequest); err != nil {
+		return e.JSON(http.StatusBadRequest, "invalid request body")
+	}
+
+	if err := loginRequest.Validate(); err != nil {
+		return e.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	loginResponse, err := authController.authSvc.Login(loginRequest)
+
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, err.Error())
+	}
+	fmt.Println("Okkkkkk")
+	return e.JSON(http.StatusOK, loginResponse)
 }
