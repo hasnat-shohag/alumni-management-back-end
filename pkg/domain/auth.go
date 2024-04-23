@@ -5,7 +5,7 @@ import (
 	"alumni-management-server/pkg/types"
 )
 
-type IUserRepo interface {
+type IAuthRepo interface {
 	DuplicateUserChecker(StudentId *string, Email *string) error
 	CreateUser(user *models.UserDetail) error
 	FindAuthorizedUserByEmailOrStudentId(interface{}) (*models.UserDetail, error)

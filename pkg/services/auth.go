@@ -12,20 +12,20 @@ import (
 
 // authService defines the methods of the domain.IAuthService interface.
 type authService struct {
-	userRepo domain.IUserRepo
+	authRepo domain.IAuthRepo
 }
 
 // AuthServiceInstance returns a new instance of the authService struct.
-func AuthServiceInstance(userRepo domain.IUserRepo) domain.IAuthService {
+func AuthServiceInstance(authRepo domain.IAuthRepo) domain.IAuthService {
 	return &authService{
-		userRepo: userRepo,
+		authRepo: authRepo,
 	}
 }
 
 // SignupUser creates a new user with the given user details.
 func (service *authService) SignupUser(registerRequest *types.SignupRequest) error {
 	// Check if the user already exists
-	err := service.userRepo.DuplicateUserChecker(&registerRequest.StudentId, &registerRequest.Email)
+	err := service.authRepo.DuplicateUserChecker(&registerRequest.StudentId, &registerRequest.Email)
 	if err != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func (service *authService) SignupUser(registerRequest *types.SignupRequest) err
 		return err
 	}
 
-	if err := service.userRepo.CreateUser(user); err != nil {
+	if err := service.authRepo.CreateUser(user); err != nil {
 		return err
 	}
 
@@ -82,7 +82,7 @@ func (service *authService) Login(loginRequest *types.LoginRequest) (*types.Logi
 		identifier = loginRequest.StudentId
 	}
 
-	user, err := service.userRepo.FindAuthorizedUserByEmailOrStudentId(identifier)
+	user, err := service.authRepo.FindAuthorizedUserByEmailOrStudentId(identifier)
 	if err != nil {
 		return nil, err
 	}

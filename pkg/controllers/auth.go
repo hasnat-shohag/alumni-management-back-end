@@ -3,7 +3,6 @@ package controllers
 import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/types"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -11,6 +10,7 @@ import (
 // IAuthController is an interface that defines the methods implemented by the AuthController struct.
 type IAuthController interface {
 	Signup(e echo.Context) error
+	Login(e echo.Context) error
 }
 
 // AuthController defines the methods of the IAuthController interface.
@@ -60,6 +60,5 @@ func (authController *AuthController) Login(e echo.Context) error {
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, err.Error())
 	}
-	fmt.Println("Okkkkkk")
 	return e.JSON(http.StatusOK, loginResponse)
 }

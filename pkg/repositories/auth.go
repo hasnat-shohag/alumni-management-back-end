@@ -14,7 +14,7 @@ type userRepo struct {
 }
 
 // UserDBInstance returns a new instance of the userRepo struct.
-func UserDBInstance(d *gorm.DB) domain.IUserRepo {
+func UserDBInstance(d *gorm.DB) domain.IAuthRepo {
 	return &userRepo{
 		db: d,
 	}
