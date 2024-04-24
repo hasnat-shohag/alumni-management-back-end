@@ -29,6 +29,10 @@ type LoginResponse struct {
 	AccessToken    string `json:"access_token"`
 }
 
+type ForgotPasswordRequest struct {
+	Email string `json:"email"`
+}
+
 // Validate validates the request body for the SignupRequest.
 func (request SignupRequest) Validate() error {
 	return validation.ValidateStruct(&request,
@@ -56,4 +60,11 @@ func (request LoginRequest) Validate() error {
 			return nil
 		})),
 	)
+}
+
+func (request ForgotPasswordRequest) Validate() error {
+	return validation.ValidateStruct(&request,
+		validation.Field(&request.Email,
+			validation.Required.Error("Email cannot be empty"),
+			validation.Length(4, 128)))
 }

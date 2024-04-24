@@ -6,9 +6,8 @@ import (
 	"alumni-management-server/pkg/models"
 	"alumni-management-server/pkg/types"
 	"alumni-management-server/pkg/utils"
+	"time"
 )
-
-// for email service
 
 // authService defines the methods of the domain.IAuthService interface.
 type authService struct {
@@ -45,6 +44,7 @@ func (service *authService) SignupUser(registerRequest *types.SignupRequest) err
 	}
 
 	user.SetVerificationProperties()
+	user.OtpExpiryTime = time.Now()
 	//? implement verification later
 
 	//Send verification email to user
