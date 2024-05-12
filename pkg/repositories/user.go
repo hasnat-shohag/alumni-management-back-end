@@ -4,9 +4,9 @@ import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/models"
 	"alumni-management-server/pkg/utils"
-	"crypto/rand"
-	"encoding/base64"
+	"fmt"
 	"gorm.io/gorm"
+	"math/rand"
 	"time"
 )
 
@@ -22,14 +22,12 @@ func UserDBInstance(d *gorm.DB) domain.IUserRepo {
 }
 
 func (repo *userRepo) CreateOTP(user *models.UserDetail) (string, error) {
-	otpBytes := make([]byte, 16)
-	if _, err := rand.Read(otpBytes); err != nil {
-		return "", err
-	}
+	// generate otp
+	otp := rand.Int() % 1000000
+	otpString := fmt.Sprintf("%06d", otp)
 
-	otp := base64.URLEncoding.EncodeToString(otpBytes)
 	// make otp hashed
-	hashedOtp, err := utils.GetPasswordHash(otp)
+	hashedOtp, err := utils.GetPasswordHash(otpString)
 	if err != nil {
 		return "", err
 	}
@@ -46,7 +44,7 @@ func (repo *userRepo) CreateOTP(user *models.UserDetail) (string, error) {
 		user.OtpExpiryTime = time.Now()
 	}
 
-	return otp, nil
+	return otpString, nil
 }
 
 func (repo *userRepo) UpdateUser(user *models.UserDetail) error {

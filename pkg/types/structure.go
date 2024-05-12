@@ -33,6 +33,11 @@ type ForgotPasswordRequest struct {
 	Email string `json:"email"`
 }
 
+type ResetPasswordRequest struct {
+	NewPassword     string `json:"new_password"`
+	ConfirmPassword string `json:"confirm_password"`
+}
+
 // Validate validates the request body for the SignupRequest.
 func (request SignupRequest) Validate() error {
 	return validation.ValidateStruct(&request,
@@ -67,4 +72,21 @@ func (request ForgotPasswordRequest) Validate() error {
 		validation.Field(&request.Email,
 			validation.Required.Error("Email cannot be empty"),
 			validation.Length(4, 128)))
+}
+
+func (request ResetPasswordRequest) Validate() error {
+	return validation.ValidateStruct(&request,
+		validation.Field(&request.NewPassword,
+			validation.Required.Error("New Password cannot be empty"),
+			validation.Length(8, 128)),
+		validation.Field(&request.ConfirmPassword,
+			validation.Required.Error("Confirm Password cannot be empty"),
+			validation.Length(8, 128),
+			validation.By(func(value interface{}) error {
+				if request.NewPassword != request.ConfirmPassword {
+					return errors.New("passwords do not match")
+				}
+				return nil
+			})),
+	)
 }

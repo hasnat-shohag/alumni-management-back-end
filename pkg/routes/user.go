@@ -21,4 +21,5 @@ func (routes *UserRoutes) InitUserRoutes() {
 	e := routes.echo
 	user := e.Group("/user")
 	user.POST("/forget-password", routes.UserCtr.ForgetPassword)
+	user.POST("/reset-password", routes.UserCtr.ResetPassword)
 }

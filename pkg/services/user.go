@@ -3,6 +3,8 @@ package services
 import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/email"
+	"alumni-management-server/pkg/models"
+	"alumni-management-server/pkg/utils"
 	"fmt"
 )
 
@@ -32,13 +34,47 @@ func (userService *userService) ForgetPassword(Email string) error {
 	}
 
 	// Send OTP to user
-	link := fmt.Sprintf("http://localhost:9030/reset-password?otp=%s", otp)
+	link := fmt.Sprintf("http://localhost:9030/reset-password?otp=%s&email=%s", otp, Email)
 	emailBody, err := email.CreateForgotPasswordEmail(link)
 	if err != nil {
 		return err
 	}
 
 	err = email.SendEmail(user.Email, email.PasswordResetSubject, emailBody)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (userService *userService) GetUserFromEmailWithValidOtp(email, otp string) (*models.UserDetail, error) {
+	user, err := userService.authRepo.FindAuthorizedUserByEmailOrStudentId(email)
+	if err != nil {
+		return nil, err
+	}
+	// check user otp is valid or not
+	if err := utils.CheckPassword(user.OTP, otp); err != nil {
+		return nil, fmt.Errorf("invalid otp")
+	}
+
+	// check otp expiry time
+	if user.OtpExpiryTime.Before(user.OtpExpiryTime) {
+		return nil, fmt.Errorf("otp expired, try again")
+	}
+
+	return user, nil
+}
+
+func (userService *userService) ResetPassword(user *models.UserDetail, password string) error {
+	// Hash the password
+	hashedPassword, err := utils.GetPasswordHash(password)
+	if err != nil {
+		return err
+	}
+
+	// Update the user password
+	user.PasswordHash = hashedPassword
+	err = userService.userRepo.UpdateUser(user)
 	if err != nil {
 		return err
 	}

@@ -9,4 +9,6 @@ type IUserRepo interface {
 
 type IUserService interface {
 	ForgetPassword(email string) error
+	ResetPassword(user *models.UserDetail, password string) error
+	GetUserFromEmailWithValidOtp(email, otp string) (*models.UserDetail, error)
 }
