@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"alumni-management-server/pkg/customerror"
+	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/models"
 	"errors"
@@ -24,10 +24,10 @@ func AuthDBInstance(d *gorm.DB) domain.IAuthRepo {
 func (repo *authRepo) DuplicateUserChecker(StudentId *string, Email *string) error {
 	user := &models.UserDetail{}
 	if err := repo.db.Where("student_id = ?", StudentId).First(user).Error; err == nil {
-		return &customerror.StudentIDExistsError{ID: *StudentId}
+		return &response.StudentIDExistsError{ID: *StudentId}
 	}
 	if err := repo.db.Where("email = ?", Email).First(user).Error; err == nil {
-		return &customerror.EmailExistsError{Email: *Email}
+		return &response.EmailExistsError{Email: *Email}
 	}
 	return nil
 }
@@ -50,7 +50,7 @@ func (repo *authRepo) FindAuthorizedUserByEmailOrStudentId(value interface{}) (*
 	}
 
 	if user.IsUserVerified == false {
-		return nil, &customerror.UserNotVerifiedError{}
+		return nil, &response.UserNotVerifiedError{}
 	}
 
 	return user, nil

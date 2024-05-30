@@ -2,6 +2,7 @@ package routes
 
 import (
 	"alumni-management-server/pkg/controllers"
+	"alumni-management-server/pkg/middlewares"
 	"github.com/labstack/echo/v4"
 )
 
@@ -22,4 +23,9 @@ func (routes *UserRoutes) InitUserRoutes() {
 	user := e.Group("/user")
 	user.POST("/forget-password", routes.UserCtr.ForgetPassword)
 	user.POST("/reset-password", routes.UserCtr.ResetPassword)
+
+	user.Use(middlewares.ValidateToken)
+
+	user.GET("/ping", routes.UserCtr.Ping)
+	user.GET("/alumni-list", routes.UserCtr.GetAllAlumni)
 }

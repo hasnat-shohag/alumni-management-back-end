@@ -53,3 +53,19 @@ func (repo *userRepo) UpdateUser(user *models.UserDetail) error {
 	}
 	return nil
 }
+
+func (repo *userRepo) FindAllAlumni(offset, limit int) ([]models.UserDetail, error) {
+	var alumni []models.UserDetail
+	if err := repo.db.Where("is_user_verified = ?", true).Offset(offset).Limit(limit).Find(&alumni).Error; err != nil {
+		return nil, err
+	}
+	return alumni, nil
+}
+
+func (repo *userRepo) CountAuthorizedUser() (int, error) {
+	var count int64
+	if err := repo.db.Model(&models.UserDetail{}).Where("is_user_verified = ?", true).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return int(count), nil
+}
