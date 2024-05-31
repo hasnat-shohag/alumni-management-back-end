@@ -25,7 +25,7 @@ func CheckPassword(passwordHash, password string) error {
 type CustomClaims struct {
 	StudentId string
 	Email     string
-	Role      string
+	Role      string `json:"role"`
 	jwt.StandardClaims
 }
 

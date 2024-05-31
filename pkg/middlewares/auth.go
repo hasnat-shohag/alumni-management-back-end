@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+type CustomClaims struct {
+	Role string `json:"role"`
+	jwt.StandardClaims
+}
+
 // ValidateToken validates the token in the Authorization header.
 func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -24,7 +29,7 @@ func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		// Parse the token
-		token, err := jwt.ParseWithClaims(tokenParts[1], &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(tokenParts[1], &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 			return []byte(config.LocalConfig.JwtSecret), nil
 		})
 		if err != nil {
@@ -32,13 +37,13 @@ func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		// Check if the token is valid
-		if claims, ok := token.Claims.(*jwt.StandardClaims); ok && token.Valid {
+		if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 			// Set the user information in the context for further use
-			c.Set("username", claims.Subject)
+			c.Set("email", claims.Subject)
+			c.Set("role", claims.Role)
 			return next(c)
 		}
 
 		return c.JSON(http.StatusUnauthorized, "Invalid token")
 	}
-
 }

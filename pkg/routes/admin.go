@@ -2,6 +2,7 @@ package routes
 
 import (
 	"alumni-management-server/pkg/controllers"
+	"alumni-management-server/pkg/middlewares"
 	"github.com/labstack/echo/v4"
 )
 
@@ -23,5 +24,7 @@ func NewAdminRoutes(echo *echo.Echo, adminCtr controllers.AdminController) *Admi
 func (routes *AdminRoutes) InitAdminRoutes() {
 	e := routes.echo
 	admin := e.Group("/admin")
+
+	admin.Use(middlewares.ValidateToken)
 	admin.POST("/verify-user/", routes.adminCtr.VerifyUser)
 }

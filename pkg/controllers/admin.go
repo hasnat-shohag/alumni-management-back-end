@@ -31,6 +31,12 @@ func (adminController *AdminController) VerifyUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Invalid value for is_valid")
 	}
 
+	// Get the user role from the context
+	role := c.Get("role").(string)
+	if role != "admin" {
+		return c.JSON(http.StatusForbidden, "Only admins can verify users")
+	}
+
 	// pass the request to the service layer
 	if err := adminController.AdminSvc.VerifyUser(studentId, isValid); err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
