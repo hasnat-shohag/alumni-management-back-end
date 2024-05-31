@@ -93,7 +93,7 @@ func (service *authService) Login(loginRequest *types.LoginRequest) (*types.Logi
 	}
 
 	// Create JWT token
-	accessToken, err := utils.GetJwtForUser(user.StudentId)
+	accessToken, err := utils.GetJwtForUser(user)
 	if err != nil {
 		return nil, err
 	}
