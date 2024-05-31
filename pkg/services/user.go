@@ -97,3 +97,11 @@ func (userService *userService) GetAllAlumni(page, limit int) ([]models.UserDeta
 
 	return alumni, totalRecords, nil
 }
+
+func (userService *userService) GetUser(id string) (*models.UserDetail, error) {
+	user, err := userService.userRepo.FindUser(id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}

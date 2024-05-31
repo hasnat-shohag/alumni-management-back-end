@@ -105,7 +105,7 @@ func (userController *UserController) GetAllAlumni(context echo.Context) error {
 
 	totalPages := (totalRecords + limitInt - 1) / limitInt
 
-	response := map[string]interface{}{
+	res := map[string]interface{}{
 		"data": alumni,
 		"meta": map[string]interface{}{
 			"page":         page,
@@ -115,5 +115,15 @@ func (userController *UserController) GetAllAlumni(context echo.Context) error {
 		},
 	}
 
-	return context.JSON(http.StatusOK, response)
+	return context.JSON(http.StatusOK, res)
+}
+
+func (userController *UserController) GetUser(context echo.Context) error {
+	studentId := context.Param("id")
+
+	user, err := userController.userSvc.GetUser(studentId)
+	if err != nil {
+		return context.JSON(response.GenerateErrorResponseBody(err))
+	}
+	return context.JSON(http.StatusOK, user)
 }

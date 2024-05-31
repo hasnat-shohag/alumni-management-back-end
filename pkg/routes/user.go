@@ -28,4 +28,5 @@ func (routes *UserRoutes) InitUserRoutes() {
 
 	user.GET("/ping", routes.UserCtr.Ping)
 	user.GET("/alumni-list", routes.UserCtr.GetAllAlumni)
+	user.GET("/:id", routes.UserCtr.GetUser)
 }

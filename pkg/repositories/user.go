@@ -71,3 +71,16 @@ func (repo *userRepo) CountAuthorizedUser() (int, error) {
 	}
 	return int(count), nil
 }
+
+func (repo *userRepo) FindUser(id string) (*models.UserDetail, error) {
+	var user models.UserDetail
+	if err := repo.db.Where("student_id = ?", id).Find(&user).Error; err != nil {
+		return nil, err
+	}
+
+	if user.Role != "user" {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	return &user, nil
+}
