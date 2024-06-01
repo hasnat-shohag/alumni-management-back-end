@@ -3,6 +3,7 @@ package services
 import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/email"
+	"fmt"
 )
 
 type adminService struct {
@@ -17,10 +18,20 @@ func NewAdminService(adminRepo domain.IAdminRepo) domain.IAdminService {
 }
 
 func (adminService *adminService) VerifyUser(studentId string, isValid bool) error {
+	// check the user is already verified or admin
+
 	// send verification successful email to the user
 	user, err := adminService.adminRepo.FindUserByStudentId(studentId)
 	if err != nil {
 		return err
+	}
+	// if user is admin then return error coz admin has no access to verify another admin
+	if user.Role != "user" {
+		return fmt.Errorf("user not found")
+	}
+
+	if user.IsUserVerified == true {
+		return fmt.Errorf("user already verified")
 	}
 
 	if isValid == true {
