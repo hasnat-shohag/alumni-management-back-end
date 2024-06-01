@@ -23,10 +23,11 @@ func (routes *UserRoutes) InitUserRoutes() {
 	user := e.Group("/user")
 	user.POST("/forget-password", routes.UserCtr.ForgetPassword)
 	user.POST("/reset-password", routes.UserCtr.ResetPassword)
+	user.GET("/ping", routes.UserCtr.Ping)
 
 	user.Use(middlewares.ValidateToken)
 
-	user.GET("/ping", routes.UserCtr.Ping)
+	//user.GET("/ping", routes.UserCtr.Ping)
 	user.GET("/alumni-list", routes.UserCtr.GetAllAlumni)
 	user.GET("/:id", routes.UserCtr.GetUser)
 }
