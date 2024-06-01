@@ -53,3 +53,10 @@ func (adminService *adminService) VerifyUser(studentId string, isValid bool) err
 
 	return nil
 }
+
+func (adminService *adminService) DeleteUser(studentId string) error {
+	if err := adminService.adminRepo.DeleteUser(studentId); err != nil {
+		return err
+	}
+	return nil
+}

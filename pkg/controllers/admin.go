@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/domain"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -43,4 +44,20 @@ func (adminController *AdminController) VerifyUser(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, "User verified successfully")
+}
+
+func (adminController *AdminController) DeleteUser(c echo.Context) error {
+	studentId := c.Param("id")
+
+	// Get the user role from the context
+	role := c.Get("role").(string)
+	if role != "admin" {
+		return c.JSON(http.StatusForbidden, "Only admins can delete users")
+	}
+
+	// pass the request to the service layer
+	if err := adminController.AdminSvc.DeleteUser(studentId); err != nil {
+		return c.JSON(response.GenerateErrorResponseBody(err))
+	}
+	return c.JSON(http.StatusOK, "User deleted successfully")
 }
