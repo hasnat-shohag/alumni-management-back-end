@@ -18,5 +18,5 @@ type IUserService interface {
 	GetUserFromEmailWithValidOtp(email, otp string) (*models.UserDetail, error)
 	GetAllAlumni(page, limit int) ([]models.UserDetail, int, error)
 	GetUser(id string) (*models.UserDetail, error)
-	//DeleteMe(studentId, studentIdFromToken string) error
+	DeleteMe(studentId, studentIdFromToken string) error
 }

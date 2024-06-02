@@ -23,8 +23,8 @@ func CheckPassword(passwordHash, password string) error {
 }
 
 type CustomClaims struct {
-	StudentId string
-	Email     string
+	StudentId string `json:"student_id"`
+	Email     string `json:"email"`
 	Role      string `json:"role"`
 	jwt.StandardClaims
 }

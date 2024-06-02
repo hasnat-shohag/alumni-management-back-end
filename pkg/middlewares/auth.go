@@ -9,7 +9,8 @@ import (
 )
 
 type CustomClaims struct {
-	Role string `json:"role"`
+	Role      string `json:"role"`
+	StudentId string `json:"student_id"`
 	jwt.StandardClaims
 }
 
@@ -41,6 +42,7 @@ func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
 			// Set the user information in the context for further use
 			c.Set("email", claims.Subject)
 			c.Set("role", claims.Role)
+			c.Set("student_id", claims.StudentId)
 			return next(c)
 		}
 

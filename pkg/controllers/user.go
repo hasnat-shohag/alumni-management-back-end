@@ -128,15 +128,15 @@ func (userController *UserController) GetUser(context echo.Context) error {
 	return context.JSON(http.StatusOK, user)
 }
 
-//func (userController *UserController) DeleteMe(context echo.Context) error {
-//
-//	studentId := context.Param("id")
-//	studentIdFromToken := context.Get("student_id").(string)
-//
-//	err := userController.userSvc.DeleteMe(studentId, studentIdFromToken)
-//	if err != nil {
-//		return context.JSON(response.GenerateErrorResponseBody(err))
-//	}
-//
-//	return context.JSON(http.StatusOK, "User deleted successfully.")
-//}
+func (userController *UserController) DeleteMe(context echo.Context) error {
+
+	studentId := context.Param("id")
+	studentIdFromToken := context.Get("student_id").(string)
+
+	err := userController.userSvc.DeleteMe(studentId, studentIdFromToken)
+	if err != nil {
+		return context.JSON(response.GenerateErrorResponseBody(err))
+	}
+
+	return context.JSON(http.StatusOK, "your account deleted successfully.")
+}

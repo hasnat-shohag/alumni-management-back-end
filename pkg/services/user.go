@@ -108,14 +108,19 @@ func (userService *userService) GetUser(id string) (*models.UserDetail, error) {
 	return user, nil
 }
 
-//func (userService *userService) DeleteMe(studentId, studentIdFromToken string) error {
-//	if studentId != studentIdFromToken {
-//		return fmt.Errorf("You have no access to delete others account")
-//	}
-//
-//	err := userService.adminRepo.DeleteUser(studentId)
-//	if err != nil {
-//		return err
-//	}
-//	return nil
-//}
+func (userService *userService) DeleteMe(studentId, studentIdFromToken string) error {
+	if studentId != studentIdFromToken {
+		return fmt.Errorf("you have no access to delete others account")
+	}
+
+	user, err := userService.userRepo.FindUser(studentId)
+	if err != nil {
+		return nil
+	}
+
+	err = userService.adminRepo.DeleteUser(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
