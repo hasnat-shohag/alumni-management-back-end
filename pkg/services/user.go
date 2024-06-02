@@ -9,14 +9,16 @@ import (
 )
 
 type userService struct {
-	userRepo domain.IUserRepo
-	authRepo domain.IAuthRepo
+	userRepo  domain.IUserRepo
+	authRepo  domain.IAuthRepo
+	adminRepo domain.IAdminRepo
 }
 
-func UserServiceInstance(userRepo domain.IUserRepo, authRepo domain.IAuthRepo) domain.IUserService {
+func UserServiceInstance(userRepo domain.IUserRepo, authRepo domain.IAuthRepo, adminRepo domain.IAdminRepo) domain.IUserService {
 	return &userService{
-		userRepo: userRepo,
-		authRepo: authRepo,
+		userRepo:  userRepo,
+		authRepo:  authRepo,
+		adminRepo: adminRepo,
 	}
 }
 
@@ -105,3 +107,15 @@ func (userService *userService) GetUser(id string) (*models.UserDetail, error) {
 	}
 	return user, nil
 }
+
+//func (userService *userService) DeleteMe(studentId, studentIdFromToken string) error {
+//	if studentId != studentIdFromToken {
+//		return fmt.Errorf("You have no access to delete others account")
+//	}
+//
+//	err := userService.adminRepo.DeleteUser(studentId)
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}

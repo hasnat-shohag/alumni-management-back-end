@@ -27,8 +27,8 @@ func Serve(e *echo.Echo) {
 
 	// service initialization
 	authService := services.AuthServiceInstance(authRepository)
-	adminService := services.NewAdminService(adminRepository)
-	userService := services.UserServiceInstance(userRepository, authRepository)
+	adminService := services.NewAdminService(adminRepository, authRepository)
+	userService := services.UserServiceInstance(userRepository, authRepository, adminRepository)
 
 	// controller initialization
 	authController := controllers.NewAuthController(authService)

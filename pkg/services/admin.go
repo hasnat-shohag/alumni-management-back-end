@@ -3,17 +3,20 @@ package services
 import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/email"
+	"alumni-management-server/pkg/models"
 	"fmt"
 )
 
 type adminService struct {
 	adminRepo domain.IAdminRepo
+	authRepo  domain.IAuthRepo
 }
 
 // NewAdminService returns a new instance of the adminService struct.
-func NewAdminService(adminRepo domain.IAdminRepo) domain.IAdminService {
+func NewAdminService(adminRepo domain.IAdminRepo, authRepo domain.IAuthRepo) domain.IAdminService {
 	return &adminService{
 		adminRepo: adminRepo,
+		authRepo:  authRepo,
 	}
 }
 
@@ -55,7 +58,14 @@ func (adminService *adminService) VerifyUser(studentId string, isValid bool) err
 }
 
 func (adminService *adminService) DeleteUser(studentId string) error {
-	if err := adminService.adminRepo.DeleteUser(studentId); err != nil {
+	// Find Authorized User
+	var user *models.UserDetail
+	user, err := adminService.authRepo.FindAuthorizedUserByEmailOrStudentId(studentId)
+	if err != nil {
+		return err
+	}
+
+	if err := adminService.adminRepo.DeleteUser(user); err != nil {
 		return err
 	}
 	return nil

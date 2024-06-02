@@ -47,11 +47,7 @@ func (repo *adminRepo) FindUserByStudentId(studentId string) (models.UserDetail,
 	return *user, nil
 }
 
-func (repo *adminRepo) DeleteUser(studentId string) error {
-	user := &models.UserDetail{}
-	if err := repo.db.Where("student_id = ?", studentId).First(user).Error; err != nil {
-		return err
-	}
+func (repo *adminRepo) DeleteUser(user *models.UserDetail) error {
 
 	if err := repo.db.Delete(user).Error; err != nil {
 		return err

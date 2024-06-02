@@ -27,7 +27,7 @@ func (routes *UserRoutes) InitUserRoutes() {
 
 	user.Use(middlewares.ValidateToken)
 
-	//user.GET("/ping", routes.UserCtr.Ping)
 	user.GET("/alumni-list", routes.UserCtr.GetAllAlumni)
 	user.GET("/:id", routes.UserCtr.GetUser)
+	//user.DELETE("/delete-me/:id", routes.UserCtr.DeleteMe)
 }
