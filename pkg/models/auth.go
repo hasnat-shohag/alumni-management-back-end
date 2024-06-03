@@ -15,11 +15,13 @@ type UserDetail struct {
 	Role           string    `json:"role"`
 	OTP            string    `json:"otp"`
 	OtpExpiryTime  time.Time `json:"otp_expiry_time"`
-	//AccessToken    string `json:"access_token"`
+	ImagePath      string    `json:"image_path"`
+	Sector         string    `json:"sector"`
+	Designation    string    `json:"designation"`
+	Department     string    `json:"department"`
 }
 
 func (x *UserDetail) SetVerificationProperties() {
 	x.IsUserVerified = false
 	x.Role = "user"
-	//x.AccessToken = ""
 }

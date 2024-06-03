@@ -2,6 +2,7 @@ package domain
 
 import (
 	"alumni-management-server/pkg/models"
+	"alumni-management-server/pkg/types"
 )
 
 type IUserRepo interface {
@@ -19,4 +20,5 @@ type IUserService interface {
 	GetAllAlumni(page, limit int) ([]models.UserDetail, int, error)
 	GetUser(id string) (*models.UserDetail, error)
 	DeleteMe(studentId, studentIdFromToken string) error
+	UpdateMe(studentId string, request types.UpdateUserRequest) error
 }

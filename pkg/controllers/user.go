@@ -5,6 +5,7 @@ import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/types"
 	"github.com/labstack/echo/v4"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 )
@@ -139,4 +140,48 @@ func (userController *UserController) DeleteMe(context echo.Context) error {
 	}
 
 	return context.JSON(http.StatusOK, "your account deleted successfully.")
+}
+
+func (userController *UserController) UpdateMe(context echo.Context) error {
+	studentId := context.Param("id")
+	studentIdFromToken := context.Get("student_id").(string)
+
+	if studentId != studentIdFromToken {
+		return context.JSON(http.StatusUnauthorized, "you have no access to update others account")
+	}
+
+	// Get the image file from the form data
+	fileHeader, err := context.FormFile("image")
+	if err != nil {
+		return context.JSON(http.StatusBadRequest, "invalid image file")
+	}
+
+	// Open the image file
+	file, err := fileHeader.Open()
+	if err != nil {
+		return context.JSON(http.StatusInternalServerError, "unable to open image file")
+	}
+
+	// Close the image file after the function returns
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			context.Logger().Error(err)
+		}
+	}(file)
+
+	userUpdateRequest := types.UpdateUserRequest{
+		Image: fileHeader,
+	}
+
+	if err := userUpdateRequest.Validate(); err != nil {
+		return context.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err = userController.userSvc.UpdateMe(studentId, userUpdateRequest)
+	if err != nil {
+		return context.JSON(response.GenerateErrorResponseBody(err))
+	}
+
+	return context.JSON(http.StatusOK, "your account updated successfully.")
 }

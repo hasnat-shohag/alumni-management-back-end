@@ -4,8 +4,13 @@ import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/email"
 	"alumni-management-server/pkg/models"
+	"alumni-management-server/pkg/types"
 	"alumni-management-server/pkg/utils"
+	"errors"
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
 )
 
 type userService struct {
@@ -122,5 +127,55 @@ func (userService *userService) DeleteMe(studentId, studentIdFromToken string) e
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (userService *userService) UpdateMe(studentId string, request types.UpdateUserRequest) error {
+	user, err := userService.userRepo.FindUser(studentId)
+	if err != nil {
+		return err
+	}
+
+	// If the user is not found, return an error
+	if user == nil {
+		return errors.New("user not found")
+	}
+
+	// Open the image file
+	file, err := request.Image.Open()
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// Create a new file in the desired location
+	dirPath := "./images"
+	imagePath := filepath.Join(dirPath, request.Image.Filename)
+
+	// Create the directory if it doesn't exist
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		os.MkdirAll(dirPath, 0755)
+	}
+
+	dst, err := os.Create(imagePath)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	// Copy the uploaded file to the new file
+	if _, err := io.Copy(dst, file); err != nil {
+		return err
+	}
+
+	// Update the user's image with the image from the request
+	user.ImagePath = imagePath
+
+	// Save the updated user back to the database
+	err = userService.userRepo.UpdateUser(user)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

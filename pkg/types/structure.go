@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 	validation "github.com/go-ozzo/ozzo-validation"
+	"mime/multipart"
 )
 
 // SignupRequest defines the request body for the signup request.
@@ -36,6 +37,14 @@ type ForgotPasswordRequest struct {
 type ResetPasswordRequest struct {
 	NewPassword     string `json:"new_password"`
 	ConfirmPassword string `json:"confirm_password"`
+}
+
+type UpdateUserRequest struct {
+	//Name        string                `json:"name,omitempty"`
+	Image *multipart.FileHeader `json:"image"`
+	//Sector      string                `json:"sector"`
+	//Designation string                `json:"designation"`
+	//Department  string                `json:"department"`
 }
 
 // Validate validates the request body for the SignupRequest.
@@ -88,5 +97,16 @@ func (request ResetPasswordRequest) Validate() error {
 				}
 				return nil
 			})),
+	)
+}
+
+func (request UpdateUserRequest) Validate() error {
+	return validation.ValidateStruct(&request,
+		validation.Field(&request.Image, validation.Required.Error("Image cannot be empty"), validation.By(func(value interface{}) error {
+			if request.Image != nil && request.Image.Size > 1024*1024 {
+				return errors.New("image size must be less than or equal to 1MB")
+			}
+			return nil
+		})),
 	)
 }
