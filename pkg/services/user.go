@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 )
@@ -146,22 +147,35 @@ func (userService *userService) UpdateMe(studentId string, request types.UpdateU
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			return
+		}
+	}(file)
 
 	// Create a new file in the desired location
 	dirPath := "./images"
-	imagePath := filepath.Join(dirPath, request.Image.Filename)
+	imagePath := filepath.Join(dirPath, studentId+"_"+request.Image.Filename)
 
 	// Create the directory if it doesn't exist
 	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
-		os.MkdirAll(dirPath, 0755)
+		err := os.MkdirAll(dirPath, 0755)
+		if err != nil {
+			return err
+		}
 	}
 
 	dst, err := os.Create(imagePath)
 	if err != nil {
 		return err
 	}
-	defer dst.Close()
+	defer func(dst *os.File) {
+		err := dst.Close()
+		if err != nil {
+			return
+		}
+	}(dst)
 
 	// Copy the uploaded file to the new file
 	if _, err := io.Copy(dst, file); err != nil {

@@ -126,7 +126,7 @@ func (userController *UserController) GetUser(context echo.Context) error {
 	if err != nil {
 		return context.JSON(response.GenerateErrorResponseBody(err))
 	}
-	//return context.File("./images/campus_ambassador.jpg")
+
 	return context.JSON(http.StatusOK, user)
 }
 
@@ -190,6 +190,5 @@ func (userController *UserController) UpdateMe(context echo.Context) error {
 func (userController *UserController) GetImage(context echo.Context) error {
 	imagePath := context.Param("image-path")
 
-	//return context.File("./images/campus_ambassador.jpg")
 	return context.File("./" + imagePath)
 }
