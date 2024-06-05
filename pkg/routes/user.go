@@ -29,7 +29,8 @@ func (routes *UserRoutes) InitUserRoutes() {
 
 	user.GET("/alumni-list", routes.UserCtr.GetAllAlumni)
 	user.GET("/:id", routes.UserCtr.GetUser)
-	user.DELETE("/delete-me/:id", routes.UserCtr.DeleteMe) // note [when user is deleted accesstoken still work!!
-	user.PATCH("/update-me/:id", routes.UserCtr.UpdateMe)
+	user.DELETE("/delete-me/:id", routes.UserCtr.DeleteMe) // note [when user is deleted access token still work!!]
+	user.PATCH("/complete-profile/:id", routes.UserCtr.UpdateMe)
 	user.GET("/get-image/:image-path", routes.UserCtr.GetImage)
+
 }

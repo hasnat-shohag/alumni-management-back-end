@@ -157,6 +157,18 @@ func (userController *UserController) UpdateMe(context echo.Context) error {
 		return context.JSON(http.StatusBadRequest, "invalid image file")
 	}
 
+	// Check the file type
+	if fileHeader.Header.Get("Content-Type") != "application/image" {
+		return context.JSON(http.StatusBadRequest, "invalid file type: expected image")
+	}
+
+	jobType := context.FormValue("job_type")
+	instituteName := context.FormValue("institute_name")
+	jobTitle := context.FormValue("job_title")
+	phoneNumber := context.FormValue("phone_number")
+	linkedIn := context.FormValue("linked_in")
+	facebook := context.FormValue("facebook")
+
 	// Open the image file
 	file, err := fileHeader.Open()
 	if err != nil {
@@ -171,15 +183,21 @@ func (userController *UserController) UpdateMe(context echo.Context) error {
 		}
 	}(file)
 
-	userUpdateRequest := types.UpdateUserRequest{
-		Image: fileHeader,
+	completeProfileRequest := types.CompleteProfileRequest{
+		Image:         fileHeader,
+		JobType:       jobType,
+		InstituteName: instituteName,
+		JobTitle:      jobTitle,
+		PhoneNumber:   phoneNumber,
+		LinkedIn:      linkedIn,
+		Facebook:      facebook,
 	}
 
-	if err := userUpdateRequest.Validate(); err != nil {
+	if err := completeProfileRequest.Validate(); err != nil {
 		return context.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	err = userController.userSvc.UpdateMe(studentId, userUpdateRequest)
+	err = userController.userSvc.UpdateMe(studentId, completeProfileRequest)
 	if err != nil {
 		return context.JSON(response.GenerateErrorResponseBody(err))
 	}

@@ -23,6 +23,9 @@ type UserDetail struct {
 	SubJobType     string    `json:"sub_job_type"`
 	InstituteName  string    `json:"institute_name"`
 	JobTitle       string    `json:"job_title"`
+	PhoneNumber    string    `json:"phone_number"`
+	LinkedIn       string    `json:"linked_in"`
+	Facebook       string    `json:"facebook"`
 }
 
 func (x *UserDetail) SetVerificationProperties() {

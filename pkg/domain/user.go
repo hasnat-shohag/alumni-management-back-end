@@ -20,5 +20,5 @@ type IUserService interface {
 	GetAllAlumni(page, limit int) ([]models.UserDetail, int, error)
 	GetUser(id string) (*models.UserDetail, error)
 	DeleteMe(studentId, studentIdFromToken string) error
-	UpdateMe(studentId string, request types.UpdateUserRequest) error
+	UpdateMe(studentId string, request types.CompleteProfileRequest) error
 }

@@ -131,7 +131,7 @@ func (userService *userService) DeleteMe(studentId, studentIdFromToken string) e
 	return nil
 }
 
-func (userService *userService) UpdateMe(studentId string, request types.UpdateUserRequest) error {
+func (userService *userService) UpdateMe(studentId string, request types.CompleteProfileRequest) error {
 	user, err := userService.userRepo.FindUser(studentId)
 	if err != nil {
 		return err
@@ -184,6 +184,17 @@ func (userService *userService) UpdateMe(studentId string, request types.UpdateU
 
 	// Update the user's image with the image from the request
 	user.ImagePath = imagePath
+	user.JobType = request.JobType
+	user.InstituteName = request.InstituteName
+	user.JobTitle = request.JobTitle
+	user.PhoneNumber = request.PhoneNumber
+	if request.LinkedIn != "" {
+		user.LinkedIn = request.LinkedIn
+	}
+	if request.Facebook != "" {
+		user.Facebook = request.Facebook
+
+	}
 
 	// Save the updated user back to the database
 	err = userService.userRepo.UpdateUser(user)

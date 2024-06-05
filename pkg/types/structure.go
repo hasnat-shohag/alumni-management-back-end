@@ -39,12 +39,14 @@ type ResetPasswordRequest struct {
 	ConfirmPassword string `json:"confirm_password"`
 }
 
-type UpdateUserRequest struct {
-	//Name        string                `json:"name,omitempty"`
-	Image *multipart.FileHeader `json:"image"`
-	//Sector      string                `json:"sector"`
-	//Designation string                `json:"designation"`
-	//Department  string                `json:"department"`
+type CompleteProfileRequest struct {
+	Image         *multipart.FileHeader `json:"image"`
+	JobType       string                `json:"job_type"`
+	InstituteName string                `json:"institute_name"`
+	JobTitle      string                `json:"job_title"`
+	PhoneNumber   string                `json:"phone_number"`
+	LinkedIn      string                `json:"linked_in,omitempty"`
+	Facebook      string                `json:"facebook,omitempty"`
 }
 
 // Validate validates the request body for the SignupRequest.
@@ -100,7 +102,7 @@ func (request ResetPasswordRequest) Validate() error {
 	)
 }
 
-func (request UpdateUserRequest) Validate() error {
+func (request CompleteProfileRequest) Validate() error {
 	return validation.ValidateStruct(&request,
 		validation.Field(&request.Image, validation.Required.Error("Image cannot be empty"), validation.By(func(value interface{}) error {
 			if request.Image != nil && request.Image.Size > 1024*1024 {
@@ -108,5 +110,11 @@ func (request UpdateUserRequest) Validate() error {
 			}
 			return nil
 		})),
+		validation.Field(&request.JobType, validation.Required.Error("Job Type cannot be empty")),
+		validation.Field(&request.InstituteName, validation.Required.Error("Institute Name cannot be empty")),
+		validation.Field(&request.JobTitle, validation.Required.Error("Job Title cannot be empty")),
+		validation.Field(&request.PhoneNumber, validation.Required.Error("Phone Number cannot be empty")),
+		validation.Field(&request.LinkedIn, validation.Length(0, 128)),
+		validation.Field(&request.Facebook, validation.Length(0, 128)),
 	)
 }
