@@ -80,6 +80,10 @@ func (userController *UserController) GetAllAlumni(context echo.Context) error {
 	// get the query params
 	page := context.QueryParam("page")
 	limit := context.QueryParam("limit")
+	jobType := context.QueryParam("job_type")
+	instituteName := context.QueryParam("institute_name")
+	//fmt.Println("jobType: ", jobType, "instituteName: ", instituteName)
+
 	// convert the query params to integers
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
@@ -99,7 +103,7 @@ func (userController *UserController) GetAllAlumni(context echo.Context) error {
 	}
 
 	// pass the request to the service layer
-	alumni, totalRecords, err := userController.userSvc.GetAllAlumni(pageInt, limitInt)
+	alumni, totalRecords, err := userController.userSvc.GetAllAlumni(pageInt, limitInt, jobType, instituteName)
 	if err != nil {
 		return context.JSON(response.GenerateErrorResponseBody(err))
 	}

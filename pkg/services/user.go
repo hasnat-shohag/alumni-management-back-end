@@ -89,16 +89,11 @@ func (userService *userService) ResetPassword(user *models.UserDetail, password 
 	return nil
 }
 
-func (userService *userService) GetAllAlumni(page, limit int) ([]models.UserDetail, int, error) {
+func (userService *userService) GetAllAlumni(page, limit int, jobType, instituteName string) ([]models.UserDetail, int, error) {
 	offset := (page - 1) * limit
 	var alumni []models.UserDetail
-	alumni, err := userService.userRepo.FindAllAlumni(offset, limit)
+	alumni, totalRecords, err := userService.userRepo.FindAllAlumni(offset, limit, jobType, instituteName)
 
-	if err != nil {
-		return nil, 0, err
-	}
-
-	totalRecords, err := userService.userRepo.CountAuthorizedUser()
 	if err != nil {
 		return nil, 0, err
 	}
