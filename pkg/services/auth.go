@@ -6,6 +6,10 @@ import (
 	"alumni-management-server/pkg/models"
 	"alumni-management-server/pkg/types"
 	"alumni-management-server/pkg/utils"
+	"io"
+	"mime/multipart"
+	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -35,12 +39,55 @@ func (service *authService) SignupUser(registerRequest *types.SignupRequest) err
 		return err
 	}
 
+	// Open the Certificate or Student id Card file
+	file, err := registerRequest.CertificateOrIdCard.Open()
+	if err != nil {
+		return err
+	}
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			return
+		}
+	}(file)
+
+	// Create a new file in the desired location
+	dirPath := "./images/certificates_and_id_cards"
+	imagePath := filepath.Join(dirPath, registerRequest.StudentId+"_"+registerRequest.CertificateOrIdCard.Filename)
+
+	// Create the directory if it doesn't exist
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		err := os.MkdirAll(dirPath, 0755)
+		if err != nil {
+			return err
+		}
+	}
+
+	dst, err := os.Create(imagePath)
+	if err != nil {
+		return err
+	}
+	defer func(dst *os.File) {
+		err := dst.Close()
+		if err != nil {
+			return
+		}
+	}(dst)
+
+	// Copy the uploaded file to the new file
+	if _, err := io.Copy(dst, file); err != nil {
+		return err
+	}
+
 	// create user
 	user := &models.UserDetail{
-		StudentId:    registerRequest.StudentId,
-		PasswordHash: passwordHash,
-		Name:         registerRequest.Name,
-		Email:        registerRequest.Email,
+		Name:                           registerRequest.Name,
+		StudentId:                      registerRequest.StudentId,
+		Email:                          registerRequest.Email,
+		GraduationYear:                 registerRequest.GraduationYear,
+		CertificateOrStudentIdCardPath: imagePath,
+		Role:                           registerRequest.Role,
+		PasswordHash:                   passwordHash,
 	}
 
 	user.SetVerificationProperties()
