@@ -33,7 +33,6 @@ type UserDetail struct {
 func (x *UserDetail) SetVerificationProperties() {
 	x.IsUserVerified = false
 	x.Session = generateSession(x.StudentId)
-	x.Role = "user"
 }
 
 func generateSession(StudentId string) string {

@@ -106,7 +106,7 @@ func (service *authService) SignupUser(registerRequest *types.SignupRequest) err
 		return err
 	}
 
-	adminEmail := "hasnat.ru.ice19@gmail.com"
+	adminEmail := "ice.alumni.management.system@gmail.com"
 	err = email.SendEmail(adminEmail, email.AdminNotificationSubject, emailBody)
 	if err != nil {
 		return err
