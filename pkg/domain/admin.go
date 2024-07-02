@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/models"
 	"alumni-management-server/pkg/types"
 )
@@ -13,6 +14,7 @@ type IAdminRepo interface {
 	DeleteExecutiveCommitteeMember(execCommitteeMember *models.ExecutiveCommittee) error
 	FindExecutiveCommitteeMemberById(id string) (models.ExecutiveCommittee, error)
 	UpdateExecutiveCommitteeMember(execCommitteeMember *models.ExecutiveCommittee) error
+	GetExecutiveCommitteeInfo() ([]response.ExecutiveCommitteeResponse, error)
 }
 
 type IAdminService interface {
@@ -21,4 +23,5 @@ type IAdminService interface {
 	AddExecutiveCommitteeMember(request *types.CreateCommitteeRequest) error
 	DeleteExecutiveCommitteeMember(id string) error
 	UpdateExecutiveCommitteeMember(id string, request *types.UpdateCommitteeRequest) error
+	GetExecutiveCommitteeInfo() ([]response.ExecutiveCommitteeResponse, error)
 }

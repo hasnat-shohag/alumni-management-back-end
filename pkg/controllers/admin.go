@@ -134,3 +134,14 @@ func (adminController *AdminController) UpdateExecutiveCommitteeMember(context e
 
 	return context.JSON(http.StatusOK, "executive committee member updated successfully")
 }
+
+// GetExecutiveCommitteeInfo returns the executive committee information.
+func (adminController *AdminController) GetExecutiveCommitteeInfo(context echo.Context) error {
+	// pass request to the service layer
+	committeeInfo, err := adminController.AdminSvc.GetExecutiveCommitteeInfo()
+	if err != nil {
+		return context.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return context.JSON(http.StatusOK, committeeInfo)
+}

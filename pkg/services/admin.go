@@ -1,6 +1,7 @@
 package services
 
 import (
+	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/email"
 	"alumni-management-server/pkg/models"
@@ -143,4 +144,14 @@ func (adminService *adminService) UpdateExecutiveCommitteeMember(id string, requ
 		return err
 	}
 	return nil
+}
+
+// GetExecutiveCommitteeInfo returns the executive committee information.
+func (adminService *adminService) GetExecutiveCommitteeInfo() ([]response.ExecutiveCommitteeResponse, error) {
+	// pass the request to the repository layer
+	executiveCommittee, err := adminService.adminRepo.GetExecutiveCommitteeInfo()
+	if err != nil {
+		return nil, err
+	}
+	return executiveCommittee, nil
 }
