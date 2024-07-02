@@ -55,3 +55,11 @@ func (repo *adminRepo) DeleteUser(user *models.UserDetail) error {
 
 	return nil
 }
+
+// AddExecutiveCommitteeMember adds a new executive committee member to the database.
+func (repo *adminRepo) AddExecutiveCommitteeMember(executiveCommitteeMember *models.ExecutiveCommittee) error {
+	if err := repo.db.Create(executiveCommitteeMember).Error; err != nil {
+		return err
+	}
+	return nil
+}

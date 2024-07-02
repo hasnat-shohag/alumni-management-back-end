@@ -3,6 +3,7 @@ package controllers
 import (
 	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/domain"
+	"alumni-management-server/pkg/types"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
@@ -60,4 +61,29 @@ func (adminController *AdminController) DeleteUser(c echo.Context) error {
 		return c.JSON(response.GenerateErrorResponseBody(err))
 	}
 	return c.JSON(http.StatusOK, "User deleted successfully")
+}
+
+// AddExecutiveCommittee adds a new executive committee member.
+func (adminController *AdminController) AddExecutiveCommittee(context echo.Context) error {
+	createCommitteeRequest := &types.CreateCommitteeRequest{}
+	if err := context.Bind(createCommitteeRequest); err != nil {
+		return context.JSON(http.StatusBadRequest, "invalid request body")
+	}
+
+	// validate the request body
+	if err := createCommitteeRequest.Validate(); err != nil {
+		return context.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	// Get the user role from the context
+	role := context.Get("role").(string)
+	if role != "admin" {
+		return context.JSON(http.StatusForbidden, "only admins can add executive members")
+	}
+
+	// pass the request to the service layer
+	if err := adminController.AdminSvc.AddExecutiveCommitteeMember(createCommitteeRequest); err != nil {
+		return context.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return context.JSON(http.StatusCreated, "executive committee member added successfully")
 }

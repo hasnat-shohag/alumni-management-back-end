@@ -36,6 +36,12 @@ func migrate() {
 		fmt.Println("Error migrating DB")
 		panic(err)
 	}
+
+	// create executive committee table
+	if err := db.Migrator().AutoMigrate(&models.ExecutiveCommittee{}); err != nil {
+		fmt.Println("Error migrating DB")
+		panic(err)
+	}
 }
 
 // function for getting db instance

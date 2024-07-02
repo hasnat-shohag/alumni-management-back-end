@@ -4,6 +4,7 @@ import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/email"
 	"alumni-management-server/pkg/models"
+	"alumni-management-server/pkg/types"
 	"fmt"
 )
 
@@ -66,6 +67,21 @@ func (adminService *adminService) DeleteUser(studentId string) error {
 	}
 
 	if err := adminService.adminRepo.DeleteUser(user); err != nil {
+		return err
+	}
+	return nil
+}
+
+// AddExecutiveCommitteeMember adds a new executive committee member.
+func (adminService *adminService) AddExecutiveCommitteeMember(request *types.CreateCommitteeRequest) error {
+	// pass the request to the repository layer
+	executiveCommitteeMember := &models.ExecutiveCommittee{}
+
+	executiveCommitteeMember.Role = request.Role
+	executiveCommitteeMember.Name = request.Name
+	executiveCommitteeMember.Designation = request.Designation
+
+	if err := adminService.adminRepo.AddExecutiveCommitteeMember(executiveCommitteeMember); err != nil {
 		return err
 	}
 	return nil
