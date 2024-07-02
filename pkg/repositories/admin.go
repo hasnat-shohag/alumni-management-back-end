@@ -1,11 +1,9 @@
 package repositories
 
 import (
-	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/models"
 	"gorm.io/gorm"
-	"strconv"
 )
 
 type adminRepo struct {
@@ -92,23 +90,11 @@ func (repo *adminRepo) UpdateExecutiveCommitteeMember(execCommitteeMember *model
 }
 
 // GetExecutiveCommitteeInfo returns the executive committee information.
-func (repo *adminRepo) GetExecutiveCommitteeInfo() ([]response.ExecutiveCommitteeResponse, error) {
+func (repo *adminRepo) GetExecutiveCommitteeInfo() ([]models.ExecutiveCommittee, error) {
 	var executiveCommittee []models.ExecutiveCommittee
 	if err := repo.db.Find(&executiveCommittee).Error; err != nil {
 		return nil, err
 	}
 
-	var responses []response.ExecutiveCommitteeResponse
-	for _, member := range executiveCommittee {
-		responseMember := response.ExecutiveCommitteeResponse{
-			ID:          strconv.Itoa(int(member.ID)),
-			Role:        member.Role,
-			Name:        member.Name,
-			Designation: member.Designation,
-		}
-		responses = append(responses, responseMember)
-	}
-
-	return responses, nil
-
+	return executiveCommittee, nil
 }

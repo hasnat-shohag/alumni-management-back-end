@@ -9,6 +9,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"strconv"
 )
 
 type adminService struct {
@@ -153,5 +154,18 @@ func (adminService *adminService) GetExecutiveCommitteeInfo() ([]response.Execut
 	if err != nil {
 		return nil, err
 	}
-	return executiveCommittee, nil
+
+	var responses []response.ExecutiveCommitteeResponse
+	for _, member := range executiveCommittee {
+		responseMember := response.ExecutiveCommitteeResponse{
+			ID:          strconv.Itoa(int(member.ID)),
+			Role:        member.Role,
+			Name:        member.Name,
+			Designation: member.Designation,
+		}
+		responses = append(responses, responseMember)
+	}
+
+	return responses, nil
+
 }

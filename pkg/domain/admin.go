@@ -14,7 +14,7 @@ type IAdminRepo interface {
 	DeleteExecutiveCommitteeMember(execCommitteeMember *models.ExecutiveCommittee) error
 	FindExecutiveCommitteeMemberById(id string) (models.ExecutiveCommittee, error)
 	UpdateExecutiveCommitteeMember(execCommitteeMember *models.ExecutiveCommittee) error
-	GetExecutiveCommitteeInfo() ([]response.ExecutiveCommitteeResponse, error)
+	GetExecutiveCommitteeInfo() ([]models.ExecutiveCommittee, error)
 }
 
 type IAdminService interface {
