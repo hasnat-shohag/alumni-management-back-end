@@ -5,19 +5,23 @@ import (
 	"alumni-management-server/pkg/email"
 	"alumni-management-server/pkg/models"
 	"alumni-management-server/pkg/types"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 )
 
 type adminService struct {
-	adminRepo domain.IAdminRepo
-	authRepo  domain.IAuthRepo
+	requestHashes map[string]bool
+	adminRepo     domain.IAdminRepo
+	authRepo      domain.IAuthRepo
 }
 
 // NewAdminService returns a new instance of the adminService struct.
 func NewAdminService(adminRepo domain.IAdminRepo, authRepo domain.IAuthRepo) domain.IAdminService {
 	return &adminService{
-		adminRepo: adminRepo,
-		authRepo:  authRepo,
+		requestHashes: make(map[string]bool),
+		adminRepo:     adminRepo,
+		authRepo:      authRepo,
 	}
 }
 
@@ -74,6 +78,20 @@ func (adminService *adminService) DeleteUser(studentId string) error {
 
 // AddExecutiveCommitteeMember adds a new executive committee member.
 func (adminService *adminService) AddExecutiveCommitteeMember(request *types.CreateCommitteeRequest) error {
+	// Generate a hash of the request parameters
+	doHash := sha256.New()
+	doHash.Write([]byte(fmt.Sprintf("%s%s%s", request.Role, request.Name, request.Designation)))
+	hash := hex.EncodeToString(doHash.Sum(nil))
+
+	// Check if the hash exists in the map
+	if _, exists := adminService.requestHashes[hash]; exists {
+		// If it exists, return an error
+		return fmt.Errorf("duplicate request")
+	}
+
+	// If it doesn't exist, add it to the map
+	adminService.requestHashes[hash] = true
+
 	// pass the request to the repository layer
 	executiveCommitteeMember := &models.ExecutiveCommittee{}
 
