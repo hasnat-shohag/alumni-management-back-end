@@ -15,3 +15,7 @@ func (request CreateCommitteeRequest) Validate() error {
 		validation.Field(&request.Designation, validation.Required.Error("Designation cannot be empty")),
 	)
 }
+
+type UpdateCommitteeRequest struct {
+	CreateCommitteeRequest
+}

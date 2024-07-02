@@ -30,4 +30,5 @@ func (routes *AdminRoutes) InitAdminRoutes() {
 	admin.DELETE("/delete-user/:id", routes.adminCtr.DeleteUser)
 	admin.POST("/add-executive-committee", routes.adminCtr.AddExecutiveCommittee)
 	admin.DELETE("/delete-executive-committee-member/:id", routes.adminCtr.DeleteExecutiveCommitteeMember)
+	admin.PATCH("/update-executive-committee-member/:id", routes.adminCtr.UpdateExecutiveCommitteeMember)
 }

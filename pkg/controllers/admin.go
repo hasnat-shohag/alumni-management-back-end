@@ -105,3 +105,32 @@ func (adminController *AdminController) DeleteExecutiveCommitteeMember(context e
 
 	return context.JSON(http.StatusOK, "executive committee member deleted successfully")
 }
+
+// UpdateExecutiveCommitteeMember updates an executive committee member
+func (adminController *AdminController) UpdateExecutiveCommitteeMember(context echo.Context) error {
+	id := context.Param("id")
+
+	// Get the user role from the context
+	roleFromToken := context.Get("role").(string)
+	if roleFromToken != "admin" {
+		return context.JSON(http.StatusForbidden, "only admins can update executive members")
+	}
+
+	updateCommitteeRequest := &types.UpdateCommitteeRequest{}
+
+	if err := context.Bind(updateCommitteeRequest); err != nil {
+		return context.JSON(http.StatusBadRequest, "invalid request body")
+	}
+
+	// validate the request body
+	if err := updateCommitteeRequest.Validate(); err != nil {
+		return context.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	// pass the request to the service layer
+	if err := adminController.AdminSvc.UpdateExecutiveCommitteeMember(id, updateCommitteeRequest); err != nil {
+		return context.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return context.JSON(http.StatusOK, "executive committee member updated successfully")
+}

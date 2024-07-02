@@ -80,3 +80,11 @@ func (repo *adminRepo) FindExecutiveCommitteeMemberById(id string) (models.Execu
 	}
 	return *execCommitteeMember, nil
 }
+
+// UpdateExecutiveCommitteeMember updates an executive committee member in the database.
+func (repo *adminRepo) UpdateExecutiveCommitteeMember(execCommitteeMember *models.ExecutiveCommittee) error {
+	if err := repo.db.Save(execCommitteeMember).Error; err != nil {
+		return err
+	}
+	return nil
+}

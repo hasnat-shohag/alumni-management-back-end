@@ -125,3 +125,22 @@ func (adminService *adminService) DeleteExecutiveCommitteeMember(id string) erro
 	}
 	return nil
 }
+
+// UpdateExecutiveCommitteeMember updates an executive committee member.
+func (adminService *adminService) UpdateExecutiveCommitteeMember(id string, request *types.UpdateCommitteeRequest) error {
+	// Get the executive committee member from the database
+	execMember, err := adminService.adminRepo.FindExecutiveCommitteeMemberById(id)
+	if err != nil {
+		return err
+	}
+
+	// pass the request to the repository layer
+	execMember.Role = request.Role
+	execMember.Name = request.Name
+	execMember.Designation = request.Designation
+
+	if err := adminService.adminRepo.UpdateExecutiveCommitteeMember(&execMember); err != nil {
+		return err
+	}
+	return nil
+}
