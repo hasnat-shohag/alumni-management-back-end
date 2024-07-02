@@ -87,3 +87,21 @@ func (adminController *AdminController) AddExecutiveCommittee(context echo.Conte
 	}
 	return context.JSON(http.StatusCreated, "executive committee member added successfully")
 }
+
+// DeleteExecutiveCommitteeMember delete an executive committee member
+func (adminController *AdminController) DeleteExecutiveCommitteeMember(context echo.Context) error {
+	id := context.Param("id")
+
+	// Get the user role from the context
+	role := context.Get("role").(string)
+	if role != "admin" {
+		return context.JSON(http.StatusForbidden, "only admins can delete executive members")
+	}
+
+	// pass the request to the service layer
+	if err := adminController.AdminSvc.DeleteExecutiveCommitteeMember(id); err != nil {
+		return context.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return context.JSON(http.StatusOK, "executive committee member deleted successfully")
+}

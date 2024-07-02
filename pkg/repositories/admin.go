@@ -63,3 +63,20 @@ func (repo *adminRepo) AddExecutiveCommitteeMember(executiveCommitteeMember *mod
 	}
 	return nil
 }
+
+// DeleteExecutiveCommitteeMember deletes an executive committee member from the database.
+func (repo *adminRepo) DeleteExecutiveCommitteeMember(execCommitteeMember *models.ExecutiveCommittee) error {
+	if err := repo.db.Delete(execCommitteeMember).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// FindExecutiveCommitteeMemberById finds an executive committee member by ID.
+func (repo *adminRepo) FindExecutiveCommitteeMemberById(id string) (models.ExecutiveCommittee, error) {
+	execCommitteeMember := &models.ExecutiveCommittee{}
+	if err := repo.db.Where("id = ?", id).First(execCommitteeMember).Error; err != nil {
+		return *execCommitteeMember, err
+	}
+	return *execCommitteeMember, nil
+}

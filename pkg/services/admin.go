@@ -88,7 +88,6 @@ func (adminService *adminService) AddExecutiveCommitteeMember(request *types.Cre
 		// If it exists, return an error
 		return fmt.Errorf("duplicate request")
 	}
-
 	// If it doesn't exist, add it to the map
 	adminService.requestHashes[hash] = true
 
@@ -100,6 +99,28 @@ func (adminService *adminService) AddExecutiveCommitteeMember(request *types.Cre
 	executiveCommitteeMember.Designation = request.Designation
 
 	if err := adminService.adminRepo.AddExecutiveCommitteeMember(executiveCommitteeMember); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (adminService *adminService) DeleteExecutiveCommitteeMember(id string) error {
+	// Get the executive committee member from the database
+	execMember, err := adminService.adminRepo.FindExecutiveCommitteeMemberById(id)
+	if err != nil {
+		return err
+	}
+
+	// deleted member should be removed from the requestHashes map so that after deleting the member, the same member can be added again
+	doHash := sha256.New()
+	doHash.Write([]byte(fmt.Sprintf("%s%s%s", execMember.Role, execMember.Name, execMember.Designation)))
+	hash := hex.EncodeToString(doHash.Sum(nil))
+
+	// Remove the hash from the map
+	delete(adminService.requestHashes, hash)
+
+	// pass the request to the repository layer
+	if err := adminService.adminRepo.DeleteExecutiveCommitteeMember(&execMember); err != nil {
 		return err
 	}
 	return nil

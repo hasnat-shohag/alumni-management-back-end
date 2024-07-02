@@ -10,10 +10,13 @@ type IAdminRepo interface {
 	FindUserByStudentId(studentId string) (models.UserDetail, error)
 	DeleteUser(user *models.UserDetail) error
 	AddExecutiveCommitteeMember(executiveCommitteeMember *models.ExecutiveCommittee) error
+	DeleteExecutiveCommitteeMember(execCommitteeMember *models.ExecutiveCommittee) error
+	FindExecutiveCommitteeMemberById(id string) (models.ExecutiveCommittee, error)
 }
 
 type IAdminService interface {
 	VerifyUser(studentId string, isValid bool) error
 	DeleteUser(studentId string) error
 	AddExecutiveCommitteeMember(request *types.CreateCommitteeRequest) error
+	DeleteExecutiveCommitteeMember(id string) error
 }
