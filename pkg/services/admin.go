@@ -6,24 +6,24 @@ import (
 	"alumni-management-server/pkg/email"
 	"alumni-management-server/pkg/models"
 	"alumni-management-server/pkg/types"
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
+	"io"
+	"mime/multipart"
+	"os"
+	"path/filepath"
 	"strconv"
 )
 
 type adminService struct {
-	requestHashes map[string]bool
-	adminRepo     domain.IAdminRepo
-	authRepo      domain.IAuthRepo
+	adminRepo domain.IAdminRepo
+	authRepo  domain.IAuthRepo
 }
 
 // NewAdminService returns a new instance of the adminService struct.
 func NewAdminService(adminRepo domain.IAdminRepo, authRepo domain.IAuthRepo) domain.IAdminService {
 	return &adminService{
-		requestHashes: make(map[string]bool),
-		adminRepo:     adminRepo,
-		authRepo:      authRepo,
+		adminRepo: adminRepo,
+		authRepo:  authRepo,
 	}
 }
 
@@ -80,25 +80,60 @@ func (adminService *adminService) DeleteUser(studentId string) error {
 
 // AddExecutiveCommitteeMember adds a new executive committee member.
 func (adminService *adminService) AddExecutiveCommitteeMember(request *types.CreateCommitteeRequest) error {
-	// Generate a hash of the request parameters
-	doHash := sha256.New()
-	doHash.Write([]byte(fmt.Sprintf("%s%s%s", request.Role, request.Name, request.Designation)))
-	hash := hex.EncodeToString(doHash.Sum(nil))
-
-	// Check if the hash exists in the map
-	if _, exists := adminService.requestHashes[hash]; exists {
-		// If it exists, return an error
-		return fmt.Errorf("duplicate request")
+	// check if the same request is already added
+	_, err := adminService.adminRepo.FindBy("email", request.Email)
+	if err == nil {
+		return fmt.Errorf("executive committee member already exists")
 	}
-	// If it doesn't exist, add it to the map
-	adminService.requestHashes[hash] = true
+
+	// Open the Certificate or Student id Card file
+	file, err := request.Image.Open()
+	if err != nil {
+		return err
+	}
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			return
+		}
+	}(file)
+
+	// Create a new file in the desired location
+	dirPath := "./images/executive_committee_avatar"
+	imagePath := filepath.Join(dirPath, request.Email+"_"+request.Image.Filename)
+
+	// Create the directory if it doesn't exist
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		err := os.MkdirAll(dirPath, 0755)
+		if err != nil {
+			return err
+		}
+	}
+
+	dst, err := os.Create(imagePath)
+	if err != nil {
+		return err
+	}
+	defer func(dst *os.File) {
+		err := dst.Close()
+		if err != nil {
+			return
+		}
+	}(dst)
+
+	// Copy the uploaded file to the new file
+	if _, err := io.Copy(dst, file); err != nil {
+		return err
+	}
 
 	// pass the request to the repository layer
 	executiveCommitteeMember := &models.ExecutiveCommittee{}
 
 	executiveCommitteeMember.Role = request.Role
 	executiveCommitteeMember.Name = request.Name
+	executiveCommitteeMember.Email = request.Email
 	executiveCommitteeMember.Designation = request.Designation
+	executiveCommitteeMember.ImagePath = imagePath
 
 	if err := adminService.adminRepo.AddExecutiveCommitteeMember(executiveCommitteeMember); err != nil {
 		return err
@@ -112,14 +147,6 @@ func (adminService *adminService) DeleteExecutiveCommitteeMember(id string) erro
 	if err != nil {
 		return err
 	}
-
-	// deleted member should be removed from the requestHashes map so that after deleting the member, the same member can be added again
-	doHash := sha256.New()
-	doHash.Write([]byte(fmt.Sprintf("%s%s%s", execMember.Role, execMember.Name, execMember.Designation)))
-	hash := hex.EncodeToString(doHash.Sum(nil))
-
-	// Remove the hash from the map
-	delete(adminService.requestHashes, hash)
 
 	// pass the request to the repository layer
 	if err := adminService.adminRepo.DeleteExecutiveCommitteeMember(&execMember); err != nil {

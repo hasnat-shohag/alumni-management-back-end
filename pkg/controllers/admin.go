@@ -5,6 +5,7 @@ import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/types"
 	"github.com/labstack/echo/v4"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 )
@@ -65,7 +66,51 @@ func (adminController *AdminController) DeleteUser(c echo.Context) error {
 
 // AddExecutiveCommittee adds a new executive committee member.
 func (adminController *AdminController) AddExecutiveCommittee(context echo.Context) error {
-	createCommitteeRequest := &types.CreateCommitteeRequest{}
+	// Get the user role from the context
+	role := context.Get("role").(string)
+	if role != "admin" {
+		return context.JSON(http.StatusForbidden, "only admins can add executive members")
+	}
+
+	// Get the image from the request body
+	fileHeader, err := context.FormFile("image")
+	if err != nil {
+		return context.JSON(http.StatusBadRequest, "invalid image file")
+	}
+
+	// Check the file type
+	if fileHeader.Header.Get("Content-Type") != "image/jpeg" && fileHeader.Header.Get("Content-Type") != "image/png" {
+		return context.JSON(http.StatusBadRequest, "invalid file type: expected png/jpg/jpg image")
+	}
+
+	// Open the image file
+	file, err := fileHeader.Open()
+	if err != nil {
+		return context.JSON(http.StatusInternalServerError, "unable to open image file")
+	}
+
+	// Close the image file after the function returns
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			context.Logger().Error(err)
+		}
+	}(file)
+
+	role = context.FormValue("role")
+	name := context.FormValue("name")
+	email := context.FormValue("email")
+	designation := context.FormValue("designation")
+
+	// bind the request body to the CreateCommitteeRequest struct
+	createCommitteeRequest := &types.CreateCommitteeRequest{
+		Role:        role,
+		Name:        name,
+		Email:       email,
+		Designation: designation,
+		Image:       fileHeader,
+	}
+
 	if err := context.Bind(createCommitteeRequest); err != nil {
 		return context.JSON(http.StatusBadRequest, "invalid request body")
 	}
@@ -73,12 +118,6 @@ func (adminController *AdminController) AddExecutiveCommittee(context echo.Conte
 	// validate the request body
 	if err := createCommitteeRequest.Validate(); err != nil {
 		return context.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	// Get the user role from the context
-	role := context.Get("role").(string)
-	if role != "admin" {
-		return context.JSON(http.StatusForbidden, "only admins can add executive members")
 	}
 
 	// pass the request to the service layer

@@ -15,6 +15,7 @@ type IAdminRepo interface {
 	FindExecutiveCommitteeMemberById(id string) (models.ExecutiveCommittee, error)
 	UpdateExecutiveCommitteeMember(execCommitteeMember *models.ExecutiveCommittee) error
 	GetExecutiveCommitteeInfo() ([]models.ExecutiveCommittee, error)
+	FindBy(fieldName string, filedVale interface{}) (models.ExecutiveCommittee, error)
 }
 
 type IAdminService interface {

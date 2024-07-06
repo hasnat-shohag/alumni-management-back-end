@@ -29,6 +29,8 @@ func (routes *AdminRoutes) InitAdminRoutes() {
 	admin.Use(middlewares.ValidateToken)
 	admin.POST("/verify-user/", routes.adminCtr.VerifyUser)
 	admin.DELETE("/delete-user/:id", routes.adminCtr.DeleteUser)
+
+	// Executive Committee
 	admin.POST("/add-executive-committee", routes.adminCtr.AddExecutiveCommittee)
 	admin.DELETE("/delete-executive-committee-member/:id", routes.adminCtr.DeleteExecutiveCommitteeMember)
 	admin.PATCH("/update-executive-committee-member/:id", routes.adminCtr.UpdateExecutiveCommitteeMember)
