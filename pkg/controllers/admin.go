@@ -155,7 +155,22 @@ func (adminController *AdminController) UpdateExecutiveCommitteeMember(context e
 		return context.JSON(http.StatusForbidden, "only admins can update executive members")
 	}
 
+	// get the form values
+	role := context.FormValue("role")
+	name := context.FormValue("name")
+	email := context.FormValue("email")
+	designation := context.FormValue("designation")
+	fileHeader, err := context.FormFile("image")
+	if err != nil {
+		return context.JSON(http.StatusBadRequest, "invalid image file")
+	}
+
 	updateCommitteeRequest := &types.UpdateCommitteeRequest{}
+	updateCommitteeRequest.Role = role
+	updateCommitteeRequest.Name = name
+	updateCommitteeRequest.Email = email
+	updateCommitteeRequest.Designation = designation
+	updateCommitteeRequest.Image = fileHeader
 
 	if err := context.Bind(updateCommitteeRequest); err != nil {
 		return context.JSON(http.StatusBadRequest, "invalid request body")

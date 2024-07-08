@@ -86,7 +86,7 @@ func (adminService *adminService) AddExecutiveCommitteeMember(request *types.Cre
 		return fmt.Errorf("executive committee member already exists")
 	}
 
-	// Open the Certificate or Student id Card file
+	// Open the executive committee member image file
 	file, err := request.Image.Open()
 	if err != nil {
 		return err
@@ -143,7 +143,7 @@ func (adminService *adminService) AddExecutiveCommitteeMember(request *types.Cre
 
 func (adminService *adminService) DeleteExecutiveCommitteeMember(id string) error {
 	// Get the executive committee member from the database
-	execMember, err := adminService.adminRepo.FindExecutiveCommitteeMemberById(id)
+	execMember, err := adminService.adminRepo.FindBy("id", id)
 	if err != nil {
 		return err
 	}
@@ -158,15 +158,57 @@ func (adminService *adminService) DeleteExecutiveCommitteeMember(id string) erro
 // UpdateExecutiveCommitteeMember updates an executive committee member.
 func (adminService *adminService) UpdateExecutiveCommitteeMember(id string, request *types.UpdateCommitteeRequest) error {
 	// Get the executive committee member from the database
-	execMember, err := adminService.adminRepo.FindExecutiveCommitteeMemberById(id)
+	execMember, err := adminService.adminRepo.FindBy("id", id)
 	if err != nil {
+		return err
+	}
+
+	// Open the executive committee member image file
+	file, err := request.Image.Open()
+	if err != nil {
+		return err
+	}
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			return
+		}
+	}(file)
+
+	// Create a new file in the desired location
+	dirPath := "./images/executive_committee_avatar"
+	imagePath := filepath.Join(dirPath, request.Email+"_"+request.Image.Filename)
+
+	// Create the directory if it doesn't exist
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		err := os.MkdirAll(dirPath, 0755)
+		if err != nil {
+			return err
+		}
+	}
+
+	dst, err := os.Create(imagePath)
+	if err != nil {
+		return err
+	}
+	defer func(dst *os.File) {
+		err := dst.Close()
+		if err != nil {
+			return
+		}
+	}(dst)
+
+	// Copy the uploaded file to the new file
+	if _, err := io.Copy(dst, file); err != nil {
 		return err
 	}
 
 	// pass the request to the repository layer
 	execMember.Role = request.Role
 	execMember.Name = request.Name
+	execMember.Email = request.Email
 	execMember.Designation = request.Designation
+	execMember.ImagePath = imagePath
 
 	if err := adminService.adminRepo.UpdateExecutiveCommitteeMember(&execMember); err != nil {
 		return err
