@@ -20,6 +20,7 @@ func NewUserRoutes(echo *echo.Echo, userCtr controllers.UserController) *UserRou
 
 func (routes *UserRoutes) InitUserRoutes() {
 	e := routes.echo
+	e.GET("/get-image/:image-path", routes.UserCtr.GetImage)
 	user := e.Group("/user")
 	user.POST("/forget-password", routes.UserCtr.ForgetPassword)
 	user.POST("/reset-password", routes.UserCtr.ResetPassword)
@@ -31,6 +32,5 @@ func (routes *UserRoutes) InitUserRoutes() {
 	user.GET("/:id", routes.UserCtr.GetUser)
 	user.DELETE("/delete-me/:id", routes.UserCtr.DeleteMe) // note [when user is deleted access token still work!!]
 	user.PATCH("/complete-profile/:id", routes.UserCtr.UpdateMe)
-	user.GET("/get-image/:image-path", routes.UserCtr.GetImage)
 
 }

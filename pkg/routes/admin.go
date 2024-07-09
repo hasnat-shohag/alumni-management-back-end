@@ -24,6 +24,7 @@ func NewAdminRoutes(echo *echo.Echo, adminCtr controllers.AdminController) *Admi
 func (routes *AdminRoutes) InitAdminRoutes() {
 	e := routes.echo
 	e.GET("/get-executive-committee-info", routes.adminCtr.GetExecutiveCommitteeInfo)
+
 	admin := e.Group("/admin")
 
 	admin.Use(middlewares.ValidateToken)

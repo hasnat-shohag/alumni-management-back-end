@@ -231,6 +231,8 @@ func (adminService *adminService) GetExecutiveCommitteeInfo() ([]response.Execut
 			Role:        member.Role,
 			Name:        member.Name,
 			Designation: member.Designation,
+			Email:       member.Email,
+			Image:       "http://localhost:9030/get-image/" + member.ImagePath,
 		}
 		responses = append(responses, responseMember)
 	}
