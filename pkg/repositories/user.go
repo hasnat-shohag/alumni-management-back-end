@@ -100,3 +100,11 @@ func (repo *userRepo) FindAlumni(id string) (*models.UserDetail, error) {
 
 	return &user, nil
 }
+
+func (repo *userRepo) FindUser(id string) (*models.UserDetail, error) {
+	var user models.UserDetail
+	if err := repo.db.Where("student_id = ? and is_user_verified = ?", id, true).Find(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}

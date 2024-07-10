@@ -11,6 +11,7 @@ type IUserRepo interface {
 	UpdateUser(user *models.UserDetail) error
 	FindAllAlumni(offset, limit int, jobType, instituteName string) ([]models.UserDetail, int, error)
 	FindAlumni(id string) (*models.UserDetail, error)
+	FindUser(id string) (*models.UserDetail, error) // user can be student or alumni
 	CountAuthorizedUser() (int, error)
 }
 

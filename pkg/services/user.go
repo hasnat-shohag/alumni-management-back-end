@@ -144,7 +144,8 @@ func (userService *userService) DeleteMe(studentId, studentIdFromToken string) e
 		return fmt.Errorf("you have no access to delete others account")
 	}
 
-	user, err := userService.userRepo.FindAlumni(studentId)
+	// Find the alumni or student, coz student can also delete their account
+	user, err := userService.userRepo.FindUser(studentId)
 	if err != nil {
 		return nil
 	}
