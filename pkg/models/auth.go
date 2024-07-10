@@ -10,8 +10,8 @@ import (
 type UserDetail struct {
 	gorm.Model
 	Name                           string    `json:"name"`
-	StudentId                      string    `gorm:"uniqueIndex;size:10"`
-	Email                          string    `gorm:"uniqueIndex;size:128"`
+	StudentId                      string    `gorm:"uniqueIndex;size:10"json:"student_id"`
+	Email                          string    `gorm:"uniqueIndex;size:128"json:"email"`
 	GraduationYear                 string    `json:"graduation_year"`
 	PasswordHash                   string    `json:"password_hash"`
 	Session                        string    `json:"session"`

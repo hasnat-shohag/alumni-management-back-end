@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/models"
 	"alumni-management-server/pkg/types"
 )
@@ -9,7 +10,7 @@ type IUserRepo interface {
 	CreateOTP(user *models.UserDetail) (string, error)
 	UpdateUser(user *models.UserDetail) error
 	FindAllAlumni(offset, limit int, jobType, instituteName string) ([]models.UserDetail, int, error)
-	FindUser(id string) (*models.UserDetail, error)
+	FindAlumni(id string) (*models.UserDetail, error)
 	CountAuthorizedUser() (int, error)
 }
 
@@ -18,7 +19,7 @@ type IUserService interface {
 	ResetPassword(user *models.UserDetail, password string) error
 	GetUserFromEmailWithValidOtp(email, otp string) (*models.UserDetail, error)
 	GetAllAlumni(page, limit int, jobType, instituteName string) ([]models.UserDetail, int, error)
-	GetUser(id string) (*models.UserDetail, error)
+	GetAlumni(id string) (*response.AlumniInfoForUser, error)
 	DeleteMe(studentId, studentIdFromToken string) error
 	UpdateMe(studentId string, request types.CompleteProfileRequest) error
 }

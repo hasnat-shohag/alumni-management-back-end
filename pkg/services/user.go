@@ -1,6 +1,7 @@
 package services
 
 import (
+	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/email"
 	"alumni-management-server/pkg/models"
@@ -12,6 +13,7 @@ import (
 	"mime/multipart"
 	"os"
 	"path/filepath"
+	"strconv"
 )
 
 type userService struct {
@@ -101,12 +103,40 @@ func (userService *userService) GetAllAlumni(page, limit int, jobType, institute
 	return alumni, totalRecords, nil
 }
 
-func (userService *userService) GetUser(id string) (*models.UserDetail, error) {
-	user, err := userService.userRepo.FindUser(id)
+func (userService *userService) GetAlumni(id string) (*response.AlumniInfoForUser, error) {
+	user, err := userService.userRepo.FindAlumni(id)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+
+	// customized response as unnecessary information not needed to client
+	var customizedResponse response.AlumniInfoForUser
+
+	customizedResponse.ID = strconv.Itoa(int(user.ID))
+	customizedResponse.Name = user.Name
+	customizedResponse.StudentId = user.StudentId
+	customizedResponse.Email = user.Email
+	customizedResponse.GraduationYear = user.GraduationYear
+	customizedResponse.Session = user.Session
+	customizedResponse.Role = user.Role
+
+	if user.ImagePath != "" {
+		customizedResponse.ImagePath = "http://localhost:9030/get-image/" + user.ImagePath
+	} else {
+		customizedResponse.ImagePath = user.ImagePath
+
+	}
+
+	customizedResponse.ImagePath = user.ImagePath
+	customizedResponse.JobType = user.JobType
+	customizedResponse.SubJobType = user.SubJobType
+	customizedResponse.InstituteName = user.InstituteName
+	customizedResponse.JobTitle = user.JobTitle
+	customizedResponse.PhoneNumber = user.PhoneNumber
+	customizedResponse.LinkedIn = user.LinkedIn
+	customizedResponse.Facebook = user.Facebook
+
+	return &customizedResponse, nil
 }
 
 func (userService *userService) DeleteMe(studentId, studentIdFromToken string) error {
@@ -114,7 +144,7 @@ func (userService *userService) DeleteMe(studentId, studentIdFromToken string) e
 		return fmt.Errorf("you have no access to delete others account")
 	}
 
-	user, err := userService.userRepo.FindUser(studentId)
+	user, err := userService.userRepo.FindAlumni(studentId)
 	if err != nil {
 		return nil
 	}
@@ -127,7 +157,7 @@ func (userService *userService) DeleteMe(studentId, studentIdFromToken string) e
 }
 
 func (userService *userService) UpdateMe(studentId string, request types.CompleteProfileRequest) error {
-	user, err := userService.userRepo.FindUser(studentId)
+	user, err := userService.userRepo.FindAlumni(studentId)
 	if err != nil {
 		return err
 	}

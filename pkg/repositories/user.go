@@ -88,13 +88,13 @@ func (repo *userRepo) CountAuthorizedUser() (int, error) {
 	return int(count), nil
 }
 
-func (repo *userRepo) FindUser(id string) (*models.UserDetail, error) {
+func (repo *userRepo) FindAlumni(id string) (*models.UserDetail, error) {
 	var user models.UserDetail
-	if err := repo.db.Where("student_id = ?", id).Find(&user).Error; err != nil {
+	if err := repo.db.Where("student_id = ? and is_user_verified = ?", id, true).Find(&user).Error; err != nil {
 		return nil, err
 	}
 
-	if user.Role != "user" {
+	if user.Role != "alumni" {
 		return nil, fmt.Errorf("user not found")
 	}
 

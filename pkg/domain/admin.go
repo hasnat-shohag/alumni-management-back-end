@@ -12,7 +12,6 @@ type IAdminRepo interface {
 	DeleteUser(user *models.UserDetail) error
 	AddExecutiveCommitteeMember(executiveCommitteeMember *models.ExecutiveCommittee) error
 	DeleteExecutiveCommitteeMember(execCommitteeMember *models.ExecutiveCommittee) error
-	//FindExecutiveCommitteeMemberById(id string) (models.ExecutiveCommittee, error)
 	UpdateExecutiveCommitteeMember(execCommitteeMember *models.ExecutiveCommittee) error
 	GetExecutiveCommitteeInfo() ([]models.ExecutiveCommittee, error)
 	FindBy(fieldName string, filedVale interface{}) (models.ExecutiveCommittee, error)

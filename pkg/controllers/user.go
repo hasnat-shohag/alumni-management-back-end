@@ -123,10 +123,10 @@ func (userController *UserController) GetAllAlumni(context echo.Context) error {
 	return context.JSON(http.StatusOK, res)
 }
 
-func (userController *UserController) GetUser(context echo.Context) error {
+func (userController *UserController) GetAlumni(context echo.Context) error {
 	studentId := context.Param("id")
 
-	user, err := userController.userSvc.GetUser(studentId)
+	user, err := userController.userSvc.GetAlumni(studentId)
 	if err != nil {
 		return context.JSON(response.GenerateErrorResponseBody(err))
 	}
