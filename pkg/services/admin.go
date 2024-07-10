@@ -35,10 +35,6 @@ func (adminService *adminService) VerifyUser(studentId string, isValid bool) err
 	if err != nil {
 		return err
 	}
-	// if user is admin then return error coz admin has no access to verify another admin
-	if user.Role != "user" {
-		return fmt.Errorf("user not found")
-	}
 
 	if user.IsUserVerified == true {
 		return fmt.Errorf("user already verified")

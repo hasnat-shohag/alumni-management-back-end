@@ -67,26 +67,26 @@ func (repo *userRepo) FindAllAlumni(offset, limit int, jobType, instituteName st
 	}
 	fmt.Println("query: ", query)
 
-	if err := repo.db.Where(query, true, "user").Offset(offset).Limit(limit).Find(&alumni).Error; err != nil {
+	if err := repo.db.Where(query, true, "alumni").Offset(offset).Limit(limit).Find(&alumni).Error; err != nil {
 		return nil, 0, err
 	}
 
 	var count int64
-	if err := repo.db.Model(&models.UserDetail{}).Where(query, true, "user").Count(&count).Error; err != nil {
+	if err := repo.db.Model(&models.UserDetail{}).Where(query, true, "alumni").Count(&count).Error; err != nil {
 		return nil, 0, err
 	}
 
 	return alumni, int(count), nil
 }
 
-func (repo *userRepo) CountAuthorizedUser() (int, error) {
-	var count int64
-	query := fmt.Sprintf("is_user_verified = ? AND role = ?")
-	if err := repo.db.Model(&models.UserDetail{}).Where(query, true, "user").Count(&count).Error; err != nil {
-		return 0, err
-	}
-	return int(count), nil
-}
+//func (repo *userRepo) CountAuthorizedUser() (int, error) {
+//	var count int64
+//	query := fmt.Sprintf("is_user_verified = ? AND role = ?")
+//	if err := repo.db.Model(&models.UserDetail{}).Where(query, true, "alumni").Count(&count).Error; err != nil {
+//		return 0, err
+//	}
+//	return int(count), nil
+//}
 
 func (repo *userRepo) FindAlumni(id string) (*models.UserDetail, error) {
 	var user models.UserDetail

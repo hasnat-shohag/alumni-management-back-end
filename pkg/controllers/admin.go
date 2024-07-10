@@ -28,6 +28,7 @@ func NewAdminController(adminSvc domain.IAdminService) AdminController {
 func (adminController *AdminController) VerifyUser(c echo.Context) error {
 	studentId := c.QueryParam("student_id")
 	isValidSting := c.QueryParam("is_valid")
+
 	isValid, err := strconv.ParseBool(isValidSting)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid value for is_valid")

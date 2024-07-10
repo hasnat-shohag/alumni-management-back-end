@@ -12,14 +12,14 @@ type IUserRepo interface {
 	FindAllAlumni(offset, limit int, jobType, instituteName string) ([]models.UserDetail, int, error)
 	FindAlumni(id string) (*models.UserDetail, error)
 	FindUser(id string) (*models.UserDetail, error) // user can be student or alumni
-	CountAuthorizedUser() (int, error)
+	//CountAuthorizedUser() (int, error)
 }
 
 type IUserService interface {
 	ForgetPassword(email string) error
 	ResetPassword(user *models.UserDetail, password string) error
 	GetUserFromEmailWithValidOtp(email, otp string) (*models.UserDetail, error)
-	GetAllAlumni(page, limit int, jobType, instituteName string) ([]models.UserDetail, int, error)
+	GetAllAlumni(page, limit int, jobType, instituteName string) ([]response.AlumniInfoForUser, int, error)
 	GetAlumni(id string) (*response.AlumniInfoForUser, error)
 	DeleteMe(studentId, studentIdFromToken string) error
 	UpdateMe(studentId string, request types.CompleteProfileRequest) error

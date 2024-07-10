@@ -90,7 +90,7 @@ func (userService *userService) ResetPassword(user *models.UserDetail, password 
 	return nil
 }
 
-func (userService *userService) GetAllAlumni(page, limit int, jobType, instituteName string) ([]models.UserDetail, int, error) {
+func (userService *userService) GetAllAlumni(page, limit int, jobType, instituteName string) ([]response.AlumniInfoForUser, int, error) {
 	offset := (page - 1) * limit
 	var alumni []models.UserDetail
 	alumni, totalRecords, err := userService.userRepo.FindAllAlumni(offset, limit, jobType, instituteName)
@@ -99,7 +99,34 @@ func (userService *userService) GetAllAlumni(page, limit int, jobType, institute
 		return nil, 0, err
 	}
 
-	return alumni, totalRecords, nil
+	var alumniResponse []response.AlumniInfoForUser
+	for _, user := range alumni {
+		var alumniInfo response.AlumniInfoForUser
+		alumniInfo.ID = strconv.Itoa(int(user.ID))
+		alumniInfo.Name = user.Name
+		alumniInfo.StudentId = user.StudentId
+		alumniInfo.Email = user.Email
+		alumniInfo.GraduationYear = user.GraduationYear
+		alumniInfo.Session = user.Session
+		alumniInfo.Role = user.Role
+
+		if user.ImagePath != "" {
+			alumniInfo.ImagePath = "http://localhost:9030/get-image/" + user.ImagePath
+		} else {
+			alumniInfo.ImagePath = user.ImagePath
+		}
+
+		alumniInfo.JobType = user.JobType
+		alumniInfo.InstituteName = user.InstituteName
+		alumniInfo.JobTitle = user.JobTitle
+		alumniInfo.PhoneNumber = user.PhoneNumber
+		alumniInfo.LinkedIn = user.LinkedIn
+		alumniInfo.Facebook = user.Facebook
+
+		alumniResponse = append(alumniResponse, alumniInfo)
+	}
+
+	return alumniResponse, totalRecords, nil
 }
 
 func (userService *userService) GetAlumni(id string) (*response.AlumniInfoForUser, error) {

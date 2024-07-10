@@ -149,8 +149,8 @@ func (userController *UserController) DeleteMe(context echo.Context) error {
 func (userController *UserController) UpdateMe(context echo.Context) error {
 	studentId := context.Param("id")
 	studentIdFromToken := context.Get("student_id").(string)
-	//fmt.Println("studentId: ", studentId, "studentIdFromToken: ", studentIdFromToken)
-	if studentId == studentIdFromToken {
+
+	if studentId != studentIdFromToken {
 		return context.JSON(http.StatusUnauthorized, "you have no access to update others account")
 	}
 
