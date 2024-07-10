@@ -22,7 +22,6 @@ type UserDetail struct {
 	ImagePath                      string    `json:"image_path"`
 	CertificateOrStudentIdCardPath string    `json:"certificate_or_student_id_card_path"`
 	JobType                        string    `json:"job_type"`
-	SubJobType                     string    `json:"sub_job_type"`
 	InstituteName                  string    `json:"institute_name"`
 	JobTitle                       string    `json:"job_title"`
 	PhoneNumber                    string    `json:"phone_number"`

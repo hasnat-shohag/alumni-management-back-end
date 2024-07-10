@@ -7,7 +7,6 @@ import (
 	"alumni-management-server/pkg/models"
 	"alumni-management-server/pkg/types"
 	"alumni-management-server/pkg/utils"
-	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -124,12 +123,9 @@ func (userService *userService) GetAlumni(id string) (*response.AlumniInfoForUse
 		customizedResponse.ImagePath = "http://localhost:9030/get-image/" + user.ImagePath
 	} else {
 		customizedResponse.ImagePath = user.ImagePath
-
 	}
 
-	customizedResponse.ImagePath = user.ImagePath
 	customizedResponse.JobType = user.JobType
-	customizedResponse.SubJobType = user.SubJobType
 	customizedResponse.InstituteName = user.InstituteName
 	customizedResponse.JobTitle = user.JobTitle
 	customizedResponse.PhoneNumber = user.PhoneNumber
@@ -158,17 +154,13 @@ func (userService *userService) DeleteMe(studentId, studentIdFromToken string) e
 }
 
 func (userService *userService) UpdateMe(studentId string, request types.CompleteProfileRequest) error {
+	// check user exists
 	user, err := userService.userRepo.FindAlumni(studentId)
 	if err != nil {
 		return err
 	}
 
-	// If the user is not found, return an error
-	if user == nil {
-		return errors.New("user not found")
-	}
-
-	// Open the image file
+	// Open the alumni image file
 	file, err := request.Image.Open()
 	if err != nil {
 		return err
@@ -181,7 +173,7 @@ func (userService *userService) UpdateMe(studentId string, request types.Complet
 	}(file)
 
 	// Create a new file in the desired location
-	dirPath := "./images"
+	dirPath := "./images/alumni_avatar/"
 	imagePath := filepath.Join(dirPath, studentId+"_"+request.Image.Filename)
 
 	// Create the directory if it doesn't exist

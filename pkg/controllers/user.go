@@ -5,7 +5,6 @@ import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/types"
 	"github.com/labstack/echo/v4"
-	"mime/multipart"
 	"net/http"
 	"strconv"
 )
@@ -150,21 +149,12 @@ func (userController *UserController) DeleteMe(context echo.Context) error {
 func (userController *UserController) UpdateMe(context echo.Context) error {
 	studentId := context.Param("id")
 	studentIdFromToken := context.Get("student_id").(string)
-
-	if studentId != studentIdFromToken {
+	//fmt.Println("studentId: ", studentId, "studentIdFromToken: ", studentIdFromToken)
+	if studentId == studentIdFromToken {
 		return context.JSON(http.StatusUnauthorized, "you have no access to update others account")
 	}
 
-	// Get the image file from the form data
-	fileHeader, err := context.FormFile("image")
-	if err != nil {
-		return context.JSON(http.StatusBadRequest, "invalid image file")
-	}
-
-	// Check the file type
-	if fileHeader.Header.Get("Content-Type") != "application/image" {
-		return context.JSON(http.StatusBadRequest, "invalid file type: expected image")
-	}
+	// Get the form values
 
 	jobType := context.FormValue("job_type")
 	instituteName := context.FormValue("institute_name")
@@ -172,20 +162,10 @@ func (userController *UserController) UpdateMe(context echo.Context) error {
 	phoneNumber := context.FormValue("phone_number")
 	linkedIn := context.FormValue("linked_in")
 	facebook := context.FormValue("facebook")
-
-	// Open the image file
-	file, err := fileHeader.Open()
+	fileHeader, err := context.FormFile("image")
 	if err != nil {
-		return context.JSON(http.StatusInternalServerError, "unable to open image file")
+		return context.JSON(http.StatusBadRequest, "invalid image file")
 	}
-
-	// Close the image file after the function returns
-	defer func(file multipart.File) {
-		err := file.Close()
-		if err != nil {
-			context.Logger().Error(err)
-		}
-	}(file)
 
 	completeProfileRequest := types.CompleteProfileRequest{
 		Image:         fileHeader,
@@ -195,6 +175,10 @@ func (userController *UserController) UpdateMe(context echo.Context) error {
 		PhoneNumber:   phoneNumber,
 		LinkedIn:      linkedIn,
 		Facebook:      facebook,
+	}
+
+	if err := context.Bind(&completeProfileRequest); err != nil {
+		return context.JSON(http.StatusBadRequest, "invalid request body")
 	}
 
 	if err := completeProfileRequest.Validate(); err != nil {

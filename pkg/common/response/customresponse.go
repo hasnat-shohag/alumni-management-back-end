@@ -19,7 +19,6 @@ type AlumniInfoForUser struct {
 	Role           string `json:"role"`
 	ImagePath      string `json:"image_path"`
 	JobType        string `json:"job_type"`
-	SubJobType     string `json:"sub_job_type"`
 	InstituteName  string `json:"institute_name"`
 	JobTitle       string `json:"job_title"`
 	PhoneNumber    string `json:"phone_number"`
