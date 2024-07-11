@@ -5,7 +5,7 @@ import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/email"
 	"alumni-management-server/pkg/models"
-	"alumni-management-server/pkg/types"
+	"alumni-management-server/pkg/serializer"
 	"alumni-management-server/pkg/utils"
 	"fmt"
 	"io"
@@ -180,7 +180,7 @@ func (userService *userService) DeleteMe(studentId, studentIdFromToken string) e
 	return nil
 }
 
-func (userService *userService) UpdateMe(studentId string, request types.CompleteProfileRequest) error {
+func (userService *userService) UpdateMe(studentId string, request serializer.CompleteProfileRequest) error {
 	// check user exists
 	user, err := userService.userRepo.FindAlumni(studentId)
 	if err != nil {

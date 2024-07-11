@@ -101,10 +101,10 @@ func (repo *adminRepo) GetExecutiveCommitteeInfo() ([]models.ExecutiveCommittee,
 }
 
 // FindBy check user already exist or not
-func (repo *adminRepo) FindBy(fieldName string, fieldValue interface{}) (models.ExecutiveCommittee, error) {
+func (repo *adminRepo) FindBy(fieldName string, value any) (models.ExecutiveCommittee, error) {
 	executiveMember := &models.ExecutiveCommittee{}
 	query := fmt.Sprintf("%s = ?", fieldName) // Dynamically create the query string
-	if err := repo.db.Where(query, fieldValue).First(executiveMember).Error; err != nil {
+	if err := repo.db.Where(query, value).First(executiveMember).Error; err != nil {
 		return *executiveMember, err
 	}
 	return *executiveMember, nil

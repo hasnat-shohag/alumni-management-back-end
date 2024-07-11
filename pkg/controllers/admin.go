@@ -3,7 +3,7 @@ package controllers
 import (
 	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/domain"
-	"alumni-management-server/pkg/types"
+	"alumni-management-server/pkg/serializer"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
@@ -89,7 +89,7 @@ func (adminController *AdminController) AddExecutiveCommittee(context echo.Conte
 	designation := context.FormValue("designation")
 
 	// bind the request body to the CreateCommitteeRequest struct
-	createCommitteeRequest := &types.CreateCommitteeRequest{
+	createCommitteeRequest := &serializer.CreateCommitteeRequest{
 		Role:        role,
 		Name:        name,
 		Email:       email,
@@ -156,7 +156,7 @@ func (adminController *AdminController) UpdateExecutiveCommitteeMember(context e
 		return context.JSON(http.StatusBadRequest, "invalid file type: expected png/jpg/jpg image")
 	}
 
-	updateCommitteeRequest := &types.UpdateCommitteeRequest{}
+	updateCommitteeRequest := &serializer.UpdateCommitteeRequest{}
 	updateCommitteeRequest.Role = role
 	updateCommitteeRequest.Name = name
 	updateCommitteeRequest.Email = email

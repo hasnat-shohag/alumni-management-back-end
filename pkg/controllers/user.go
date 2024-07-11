@@ -3,7 +3,7 @@ package controllers
 import (
 	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/domain"
-	"alumni-management-server/pkg/types"
+	"alumni-management-server/pkg/serializer"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
@@ -26,7 +26,7 @@ func NewUserController(userSvc domain.IUserService) UserController {
 }
 
 func (userController *UserController) ForgetPassword(e echo.Context) error {
-	forgotPasswordReq := types.ForgotPasswordRequest{}
+	forgotPasswordReq := serializer.ForgotPasswordRequest{}
 	// bind the request body to the ForgotPasswordRequest struct
 	if err := e.Bind(&forgotPasswordReq); err != nil {
 		return e.JSON(http.StatusBadRequest, "invalid request body")
@@ -43,7 +43,7 @@ func (userController *UserController) ForgetPassword(e echo.Context) error {
 }
 
 func (userController *UserController) ResetPassword(e echo.Context) error {
-	resetPasswordReq := types.ResetPasswordRequest{}
+	resetPasswordReq := serializer.ResetPasswordRequest{}
 
 	// bind the request body to the ResetPasswordRequest struct
 	if err := e.Bind(&resetPasswordReq); err != nil {
@@ -167,7 +167,7 @@ func (userController *UserController) UpdateMe(context echo.Context) error {
 		return context.JSON(http.StatusBadRequest, "invalid image file")
 	}
 
-	completeProfileRequest := types.CompleteProfileRequest{
+	completeProfileRequest := serializer.CompleteProfileRequest{
 		Image:         fileHeader,
 		JobType:       jobType,
 		InstituteName: instituteName,

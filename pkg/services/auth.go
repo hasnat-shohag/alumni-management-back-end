@@ -4,7 +4,7 @@ import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/email"
 	"alumni-management-server/pkg/models"
-	"alumni-management-server/pkg/types"
+	"alumni-management-server/pkg/serializer"
 	"alumni-management-server/pkg/utils"
 	"io"
 	"mime/multipart"
@@ -26,7 +26,7 @@ func AuthServiceInstance(authRepo domain.IAuthRepo) domain.IAuthService {
 }
 
 // SignupUser creates a new user with the given user details.
-func (service *authService) SignupUser(registerRequest *types.SignupRequest) error {
+func (service *authService) SignupUser(registerRequest *serializer.SignupRequest) error {
 	// Check if the user already exists
 	err := service.authRepo.DuplicateUserChecker(&registerRequest.StudentId, &registerRequest.Email)
 	if err != nil {
@@ -119,7 +119,7 @@ func (service *authService) SignupUser(registerRequest *types.SignupRequest) err
 	return nil
 }
 
-func (service *authService) Login(loginRequest *types.LoginRequest) (*types.LoginResponse, error) {
+func (service *authService) Login(loginRequest *serializer.LoginRequest) (*serializer.LoginResponse, error) {
 	// Check user is verified or not
 	var identifier *string
 	// if studentId or email is not provided it gets an error from the validation in the controller layer
@@ -145,7 +145,7 @@ func (service *authService) Login(loginRequest *types.LoginRequest) (*types.Logi
 		return nil, err
 	}
 
-	return &types.LoginResponse{
+	return &serializer.LoginResponse{
 		Name:           user.Name,
 		Email:          user.Email,
 		StudentId:      user.StudentId,

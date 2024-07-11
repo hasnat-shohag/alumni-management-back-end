@@ -5,7 +5,7 @@ import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/email"
 	"alumni-management-server/pkg/models"
-	"alumni-management-server/pkg/types"
+	"alumni-management-server/pkg/serializer"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -75,7 +75,7 @@ func (adminService *adminService) DeleteUser(studentId string) error {
 }
 
 // AddExecutiveCommitteeMember adds a new executive committee member.
-func (adminService *adminService) AddExecutiveCommitteeMember(request *types.CreateCommitteeRequest) error {
+func (adminService *adminService) AddExecutiveCommitteeMember(request *serializer.CreateCommitteeRequest) error {
 	// check if the same request is already added
 	_, err := adminService.adminRepo.FindBy("email", request.Email)
 	if err == nil {
@@ -152,7 +152,7 @@ func (adminService *adminService) DeleteExecutiveCommitteeMember(id string) erro
 }
 
 // UpdateExecutiveCommitteeMember updates an executive committee member.
-func (adminService *adminService) UpdateExecutiveCommitteeMember(id string, request *types.UpdateCommitteeRequest) error {
+func (adminService *adminService) UpdateExecutiveCommitteeMember(id string, request *serializer.UpdateCommitteeRequest) error {
 	// Get the executive committee member from the database
 	execMember, err := adminService.adminRepo.FindBy("id", id)
 	if err != nil {

@@ -3,7 +3,7 @@ package domain
 import (
 	"alumni-management-server/pkg/common/response"
 	"alumni-management-server/pkg/models"
-	"alumni-management-server/pkg/types"
+	"alumni-management-server/pkg/serializer"
 )
 
 type IUserRepo interface {
@@ -22,5 +22,5 @@ type IUserService interface {
 	GetAllAlumni(page, limit int, jobType, instituteName string) ([]response.AlumniInfoForUser, int, error)
 	GetAlumni(id string) (*response.AlumniInfoForUser, error)
 	DeleteMe(studentId, studentIdFromToken string) error
-	UpdateMe(studentId string, request types.CompleteProfileRequest) error
+	UpdateMe(studentId string, request serializer.CompleteProfileRequest) error
 }

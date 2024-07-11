@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"alumni-management-server/pkg/domain"
-	"alumni-management-server/pkg/types"
+	"alumni-management-server/pkg/serializer"
 	"github.com/labstack/echo/v4"
 	"mime/multipart"
 	"net/http"
@@ -62,7 +62,7 @@ func (authController *AuthController) Signup(context echo.Context) error {
 	}(file)
 
 	// bind the request body to the SignupRequest struct
-	registerRequest := &types.SignupRequest{
+	registerRequest := &serializer.SignupRequest{
 		Name:                name,
 		StudentId:           studentId,
 		Email:               email,
@@ -91,7 +91,7 @@ func (authController *AuthController) Signup(context echo.Context) error {
 }
 
 func (authController *AuthController) Login(e echo.Context) error {
-	loginRequest := &types.LoginRequest{}
+	loginRequest := &serializer.LoginRequest{}
 	if err := e.Bind(loginRequest); err != nil {
 		return e.JSON(http.StatusBadRequest, "invalid request body")
 	}

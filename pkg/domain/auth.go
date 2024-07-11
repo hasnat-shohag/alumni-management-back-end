@@ -2,7 +2,7 @@ package domain
 
 import (
 	"alumni-management-server/pkg/models"
-	"alumni-management-server/pkg/types"
+	"alumni-management-server/pkg/serializer"
 )
 
 type IAuthRepo interface {
@@ -12,6 +12,6 @@ type IAuthRepo interface {
 }
 
 type IAuthService interface {
-	SignupUser(registerRequest *types.SignupRequest) error
-	Login(loginRequest *types.LoginRequest) (*types.LoginResponse, error)
+	SignupUser(registerRequest *serializer.SignupRequest) error
+	Login(loginRequest *serializer.LoginRequest) (*serializer.LoginResponse, error)
 }

@@ -20,6 +20,11 @@ func Serve(e *echo.Echo) {
 	connection.Connect()
 	db := connection.GetDB()
 
+	// event module initialization
+	eventRepository := repositories.NewEventRepo(db)
+	eventService := services.NewEventService(&eventRepository)
+	eventController := controllers.NewEventController(&eventService)
+
 	// repository initialization
 	authRepository := repositories.AuthDBInstance(db)
 	adminRepository := repositories.AdminDBInstance(db)
@@ -39,10 +44,12 @@ func Serve(e *echo.Echo) {
 	authRoutes := routes.NewAuthRoutes(e, authController)
 	adminRoutes := routes.NewAdminRoutes(e, adminController)
 	userRoutes := routes.NewUserRoutes(e, userController)
+	eventRoutes := routes.NewEventRoutes(e, &eventController)
 
 	authRoutes.InitAuthRoutes()
 	adminRoutes.InitAdminRoutes()
 	userRoutes.InitUserRoutes()
+	eventRoutes.InitEventRoutes()
 
 	// starting server
 	log.Fatal(e.Start(fmt.Sprintf(":%s", config.LocalConfig.Port)))

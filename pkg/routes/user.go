@@ -34,4 +34,6 @@ func (routes *UserRoutes) InitUserRoutes() {
 	user.DELETE("/delete-me/:id", routes.UserCtr.DeleteMe) // note [when user is deleted access token still work!!]
 	user.PATCH("/complete-profile/:id", routes.UserCtr.UpdateMe)
 
+	// Event
+	//user.GET("/create-event", routes.UserCtr.CreateEvent)
 }
