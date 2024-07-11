@@ -23,16 +23,10 @@ func NewAdminRoutes(echo *echo.Echo, adminCtr controllers.AdminController) *Admi
 // InitAdminRoutes initializes the admin routes.
 func (routes *AdminRoutes) InitAdminRoutes() {
 	e := routes.echo
-	e.GET("/get-executive-committee-info", routes.adminCtr.GetExecutiveCommitteeInfo)
+	v1 := e.Group("/v1")
 
-	admin := e.Group("/admin")
+	v1.Use(middlewares.ValidateToken)
 
-	admin.Use(middlewares.ValidateToken)
-	admin.POST("/verify-user/", routes.adminCtr.VerifyUser)
-	admin.DELETE("/delete-user/:id", routes.adminCtr.DeleteUser)
-
-	// Executive Committee
-	admin.POST("/add-executive-committee", routes.adminCtr.AddExecutiveCommittee)
-	admin.DELETE("/delete-executive-committee-member/:id", routes.adminCtr.DeleteExecutiveCommitteeMember)
-	admin.PATCH("/update-executive-committee-member/:id", routes.adminCtr.UpdateExecutiveCommitteeMember)
+	v1.POST("/admin/verify-user/", routes.adminCtr.VerifyUser)
+	v1.DELETE("/admin/delete-user/:id", routes.adminCtr.DeleteUser)
 }

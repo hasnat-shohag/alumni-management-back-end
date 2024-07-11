@@ -25,6 +25,11 @@ func Serve(e *echo.Echo) {
 	eventService := services.NewEventService(&eventRepository)
 	eventController := controllers.NewEventController(&eventService)
 
+	// Executive Committee module initialization
+	executiveCommitteeRepository := repositories.NewExecutiveCommitteeRepo(db)
+	executiveCommitteeService := services.NewExecutiveCommitteeService(&executiveCommitteeRepository)
+	executiveCommitteeController := controllers.NewExecutiveCommitteeController(&executiveCommitteeService)
+
 	// repository initialization
 	authRepository := repositories.AuthDBInstance(db)
 	adminRepository := repositories.AdminDBInstance(db)
@@ -45,11 +50,13 @@ func Serve(e *echo.Echo) {
 	adminRoutes := routes.NewAdminRoutes(e, adminController)
 	userRoutes := routes.NewUserRoutes(e, userController)
 	eventRoutes := routes.NewEventRoutes(e, &eventController)
+	executiveCommitteeRoutes := routes.NewExecutiveCommitteeRoutes(e, &executiveCommitteeController)
 
 	authRoutes.InitAuthRoutes()
 	adminRoutes.InitAdminRoutes()
 	userRoutes.InitUserRoutes()
 	eventRoutes.InitEventRoutes()
+	executiveCommitteeRoutes.InitExecutiveCommitteeRoutes()
 
 	// starting server
 	log.Fatal(e.Start(fmt.Sprintf(":%s", config.LocalConfig.Port)))
