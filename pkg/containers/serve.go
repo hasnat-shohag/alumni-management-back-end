@@ -1,6 +1,7 @@
 package containers
 
 import (
+	"alumni-management-server/pkg/common/logger"
 	"alumni-management-server/pkg/config"
 	"alumni-management-server/pkg/connection"
 	"alumni-management-server/pkg/controllers"
@@ -13,6 +14,9 @@ import (
 )
 
 func Serve(e *echo.Echo) {
+	// init logger
+	logger.NewLogger()
+
 	// config initialization
 	config.SetConfig()
 

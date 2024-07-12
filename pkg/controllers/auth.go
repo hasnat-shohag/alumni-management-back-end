@@ -4,7 +4,6 @@ import (
 	"alumni-management-server/pkg/domain"
 	"alumni-management-server/pkg/serializer"
 	"github.com/labstack/echo/v4"
-	"mime/multipart"
 	"net/http"
 )
 
@@ -46,20 +45,6 @@ func (authController *AuthController) Signup(context echo.Context) error {
 	role := context.FormValue("role")
 	password := context.FormValue("password")
 	confirmPassword := context.FormValue("confirm_password")
-
-	// Open the image file
-	file, err := fileHeader.Open()
-	if err != nil {
-		return context.JSON(http.StatusInternalServerError, "unable to open image file")
-	}
-
-	// Close the image file after the function returns
-	defer func(file multipart.File) {
-		err := file.Close()
-		if err != nil {
-			context.Logger().Error(err)
-		}
-	}(file)
 
 	// bind the request body to the SignupRequest struct
 	registerRequest := &serializer.SignupRequest{

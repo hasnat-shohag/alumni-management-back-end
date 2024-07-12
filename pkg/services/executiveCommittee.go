@@ -28,7 +28,7 @@ func NewExecutiveCommitteeService(executiveCommitteeRepo repositories.ExecutiveC
 	return ExecutiveCommitteeService{executiveCommitteeRepo: executiveCommitteeRepo}
 }
 
-// AddExecutiveCommitteeMember adds a new executive committee member.
+// Create a new executive committee member.
 func (executiveCommitteeService *ExecutiveCommitteeService) Create(request *serializer.CreateCommitteeRequest) error {
 	// check if the same request is already added
 	_, err := executiveCommitteeService.executiveCommitteeRepo.FindBy("email", request.Email)

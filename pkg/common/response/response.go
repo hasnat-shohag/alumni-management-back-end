@@ -1,6 +1,7 @@
 package response
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -15,8 +16,21 @@ type SuccessResponse struct {
 // Map for errors with http code
 var ResponseCode = make(map[string]int, 0)
 
+var (
+	ErrParsingRequestBody = NewError("failed to parse request body", http.StatusBadRequest)
+	ErrEventAlreadyExists = NewError("Event already exists", http.StatusBadRequest)
+)
+
 func responseMap() map[string]int {
 	return ResponseCode
+}
+
+func NewError(message string, httpCode int) error {
+	_, available := ResponseCode[message]
+	if !available {
+		ResponseCode[message] = httpCode
+	}
+	return errors.New(message)
 }
 
 type StudentIDExistsError struct {

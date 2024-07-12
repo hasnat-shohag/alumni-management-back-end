@@ -1,10 +1,13 @@
 package utils
 
 import (
+	logger "alumni-management-server/pkg/common/logger"
 	"alumni-management-server/pkg/config"
 	"alumni-management-server/pkg/models"
 	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
+	"strconv"
 	"time"
 )
 
@@ -49,4 +52,13 @@ func GetJwtForUser(user *models.UserDetail) (string, error) {
 		return "", err
 	}
 	return token, nil
+}
+
+func ParseQueryParamAsInt(context echo.Context, paramName string) (int, error) {
+	value, err := strconv.Atoi(context.QueryParam(paramName))
+	if err != nil {
+		logger.Error(err)
+		return 0, err
+	}
+	return value, nil
 }
