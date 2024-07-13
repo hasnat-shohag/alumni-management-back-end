@@ -27,4 +27,5 @@ func (routes *EventRoutes) InitEventRoutes() {
 	v1.PATCH("/event/update/:id", routes.eventCtr.Update)
 	v1.DELETE("/event/delete/:id", routes.eventCtr.Delete)
 	v1.GET("/event/:id", routes.eventCtr.FindById)
+	v1.GET("/events", routes.eventCtr.FindAll)
 }

@@ -20,6 +20,7 @@ type EventServiceInterface interface {
 	Update(id int, req *serializer.CreateEventRequest) (*models.Event, error)
 	Delete(id int) (int, error)
 	FindById(id int) (*models.Event, error)
+	FindAll() (*[]models.Event, error)
 }
 
 type EventService struct {
@@ -177,4 +178,13 @@ func (eventService *EventService) FindById(id int) (*models.Event, error) {
 		return nil, fmt.Errorf("error: %s", err)
 	}
 	return &event, nil
+}
+
+func (eventService *EventService) FindAll() (*[]models.Event, error) {
+	events, err := eventService.eventRepo.FindAll()
+	if err != nil {
+		logger.Error(err)
+		return nil, fmt.Errorf("error: %s", err)
+	}
+	return events, nil
 }

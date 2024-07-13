@@ -15,6 +15,7 @@ type EventControllerInterface interface {
 	Update(context echo.Context) error
 	Delete(context echo.Context) error
 	FindById(context echo.Context) error
+	FindAll(context echo.Context) error
 }
 
 type EventController struct {
@@ -154,4 +155,14 @@ func (eventController *EventController) FindById(context echo.Context) error {
 	}
 
 	return context.JSON(http.StatusOK, response.GenerateSuccessResponse("successful", event))
+}
+
+func (eventController *EventController) FindAll(context echo.Context) error {
+	events, err := eventController.eventService.FindAll()
+	if err != nil {
+		logger.Error(err)
+		return context.JSON(response.GenerateErrorResponseBody(err))
+	}
+
+	return context.JSON(http.StatusOK, response.GenerateSuccessResponse("successful", events))
 }

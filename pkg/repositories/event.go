@@ -12,6 +12,7 @@ type EventRepoInterface interface {
 	Delete(id int) (int, error)
 	EventCheck(title, startTime string) error
 	FindById(id int) (models.Event, error)
+	FindAll() (*[]models.Event, error)
 }
 
 type EventRepo struct {
@@ -58,4 +59,12 @@ func (eventRepo *EventRepo) Delete(id int) (int, error) {
 		return 0, err
 	}
 	return id, nil
+}
+
+func (eventRepo *EventRepo) FindAll() (*[]models.Event, error) {
+	events := []models.Event{}
+	if err := eventRepo.db.Table("events").Where("is_deleted = ?", false).Find(&events).Error; err != nil {
+		return nil, err
+	}
+	return &events, nil
 }
