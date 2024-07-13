@@ -2,12 +2,14 @@ package repositories
 
 import (
 	"alumni-management-server/pkg/models"
+	"fmt"
 	"gorm.io/gorm"
 )
 
 type EventRepoInterface interface {
 	Create(event *models.Event) (*models.Event, error)
 	Update(event *models.Event) (*models.Event, error)
+	Delete(id int) (int, error)
 	EventCheck(title, startTime string) error
 	FindById(id int) (models.Event, error)
 }
@@ -44,9 +46,16 @@ func (eventRepo *EventRepo) EventCheck(title, startTime string) error {
 
 func (eventRepo *EventRepo) FindById(id int) (models.Event, error) {
 	event := &models.Event{}
-	if err := eventRepo.db.Table("events").Where("id = ?", id).First(&event).Error; err != nil {
+	query := fmt.Sprintf("id = ? and is_deleted = ?")
+	if err := eventRepo.db.Table("events").Where(query, id, false).First(&event).Error; err != nil {
 		return *event, err
 	}
 	return *event, nil
+}
 
+func (eventRepo *EventRepo) Delete(id int) (int, error) {
+	if err := eventRepo.db.Table("events").Where("id = ?", id).UpdateColumn("is_deleted", true).Error; err != nil {
+		return 0, err
+	}
+	return id, nil
 }

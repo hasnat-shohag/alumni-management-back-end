@@ -7,6 +7,7 @@ import (
 	"alumni-management-server/pkg/repositories"
 	"alumni-management-server/pkg/serializer"
 	"alumni-management-server/pkg/utils"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"os"
@@ -17,6 +18,8 @@ import (
 type EventServiceInterface interface {
 	Create(req *serializer.CreateEventRequest) (*models.Event, error)
 	Update(id int, req *serializer.CreateEventRequest) (*models.Event, error)
+	Delete(id int) (int, error)
+	FindById(id int) (*models.Event, error)
 }
 
 type EventService struct {
@@ -121,14 +124,6 @@ func (eventService *EventService) Update(id int, req *serializer.CreateEventRequ
 	dirPath := "./images/event_banner"
 	imagePath := filepath.Join(dirPath, strconv.FormatInt(utils.GenerateRandomNumberOfSixDigit(), 6)+"_"+req.Image.Filename)
 
-	// Create the directory if it doesn't exist
-	//if _, err := os.Stat(dirPath); os.IsNotExist(err) {
-	//	err := os.MkdirAll(dirPath, 0755)
-	//	if err != nil {
-	//		return err
-	//	}
-	//}
-
 	dst, err := os.Create(imagePath)
 	if err != nil {
 		return nil, err
@@ -157,4 +152,29 @@ func (eventService *EventService) Update(id int, req *serializer.CreateEventRequ
 	}
 
 	return updatedEvent, nil
+}
+
+func (eventService *EventService) Delete(id int) (int, error) {
+	_, err := eventService.eventRepo.FindById(id)
+	if err != nil {
+		logger.Error(err)
+		return 0, fmt.Errorf("error: %s", err)
+	}
+
+	ID, err := eventService.eventRepo.Delete(id)
+	if err != nil {
+		logger.Error(err)
+		return 0, fmt.Errorf("error: %s", err)
+	}
+
+	return ID, nil
+}
+
+func (eventService *EventService) FindById(id int) (*models.Event, error) {
+	event, err := eventService.eventRepo.FindById(id)
+	if err != nil {
+		logger.Error(err)
+		return nil, fmt.Errorf("error: %s", err)
+	}
+	return &event, nil
 }

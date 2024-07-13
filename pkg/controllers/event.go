@@ -13,6 +13,8 @@ import (
 type EventControllerInterface interface {
 	Create(context echo.Context) error
 	Update(context echo.Context) error
+	Delete(context echo.Context) error
+	FindById(context echo.Context) error
 }
 
 type EventController struct {
@@ -80,7 +82,7 @@ func (eventController *EventController) Update(context echo.Context) error {
 	// get value from the request body
 	fileHeader, err := context.FormFile("image")
 	if err != nil {
-		return context.JSON(response.GenerateErrorResponseBody(response.ErrParsingRequestBody))
+		return context.JSON(response.GenerateErrorResponseBody(response.ErrInvalidRequestParams))
 	}
 
 	// Check the file type
@@ -116,4 +118,40 @@ func (eventController *EventController) Update(context echo.Context) error {
 	}
 
 	return context.JSON(http.StatusOK, response.GenerateSuccessResponse("updated successfully", updatedEvent.ID))
+}
+
+func (eventController *EventController) Delete(context echo.Context) error {
+	// Get the user role from the context
+	role := context.Get("role").(string)
+	if role != "admin" {
+		return context.JSON(http.StatusForbidden, "only admins can add executive members")
+	}
+
+	eventID, err := utils.ParseParamAsInt(context, "id")
+	if err != nil {
+		return context.JSON(response.GenerateErrorResponseBody(response.ErrInvalidRequestParams))
+	}
+
+	ID, err := eventController.eventService.Delete(eventID)
+	if err != nil {
+		logger.Error(err)
+		return context.JSON(response.GenerateErrorResponseBody(err))
+	}
+
+	return context.JSON(http.StatusOK, response.GenerateSuccessResponse("deleted successfully", ID))
+}
+
+func (eventController *EventController) FindById(context echo.Context) error {
+	eventID, err := utils.ParseParamAsInt(context, "id")
+	if err != nil {
+		return context.JSON(response.GenerateErrorResponseBody(response.ErrInvalidRequestParams))
+	}
+
+	event, err := eventController.eventService.FindById(eventID)
+	if err != nil {
+		logger.Error(err)
+		return context.JSON(response.GenerateErrorResponseBody(err))
+	}
+
+	return context.JSON(http.StatusOK, response.GenerateSuccessResponse("successful", event))
 }

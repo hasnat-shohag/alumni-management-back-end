@@ -17,8 +17,9 @@ type SuccessResponse struct {
 var ResponseCode = make(map[string]int, 0)
 
 var (
-	ErrParsingRequestBody = NewError("failed to parse request body", http.StatusBadRequest)
-	ErrEventAlreadyExists = NewError("Event already exists", http.StatusBadRequest)
+	ErrParsingRequestBody   = NewError("failed to parse request body", http.StatusBadRequest)
+	ErrInvalidRequestParams = NewError("request params is not valid", http.StatusBadRequest)
+	ErrEventAlreadyExists   = NewError("Event already exists", http.StatusBadRequest)
 )
 
 func responseMap() map[string]int {
