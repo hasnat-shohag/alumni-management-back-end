@@ -24,5 +24,5 @@ func (routes *EventRoutes) InitEventRoutes() {
 
 	v1.Use(middlewares.ValidateToken)
 	v1.POST("/event/create", routes.eventCtr.Create)
-
+	v1.PATCH("/event/update/:id", routes.eventCtr.Update)
 }

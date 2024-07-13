@@ -7,6 +7,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
+	"math/rand"
 	"strconv"
 	"time"
 )
@@ -54,11 +55,17 @@ func GetJwtForUser(user *models.UserDetail) (string, error) {
 	return token, nil
 }
 
-func ParseQueryParamAsInt(context echo.Context, paramName string) (int, error) {
-	value, err := strconv.Atoi(context.QueryParam(paramName))
+func ParseParamAsInt(context echo.Context, paramName string) (int, error) {
+	value, err := strconv.Atoi(context.Param(paramName))
 	if err != nil {
 		logger.Error(err)
 		return 0, err
 	}
 	return value, nil
+}
+
+func GenerateRandomNumberOfSixDigit() int64 {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	random := r.Intn(900000) + 100000
+	return int64(random)
 }

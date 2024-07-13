@@ -6,8 +6,10 @@ import (
 )
 
 type EventRepoInterface interface {
-	Create(event *models.Event) error
+	Create(event *models.Event) (*models.Event, error)
+	Update(event *models.Event) (*models.Event, error)
 	EventCheck(title, startTime string) error
+	FindById(id int) (models.Event, error)
 }
 
 type EventRepo struct {
@@ -18,11 +20,18 @@ func NewEventRepo(db *gorm.DB) EventRepo {
 	return EventRepo{db: db}
 }
 
-func (eventRepo *EventRepo) Create(event *models.Event) error {
+func (eventRepo *EventRepo) Create(event *models.Event) (*models.Event, error) {
 	if err := eventRepo.db.Create(event).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return event, nil
+}
+
+func (eventRepo *EventRepo) Update(event *models.Event) (*models.Event, error) {
+	if err := eventRepo.db.Table("events").Save(event).Error; err != nil {
+		return nil, err
+	}
+	return event, nil
 }
 
 func (eventRepo *EventRepo) EventCheck(title, startTime string) error {
@@ -31,4 +40,13 @@ func (eventRepo *EventRepo) EventCheck(title, startTime string) error {
 		return query.Error
 	}
 	return nil
+}
+
+func (eventRepo *EventRepo) FindById(id int) (models.Event, error) {
+	event := &models.Event{}
+	if err := eventRepo.db.Table("events").Where("id = ?", id).First(&event).Error; err != nil {
+		return *event, err
+	}
+	return *event, nil
+
 }

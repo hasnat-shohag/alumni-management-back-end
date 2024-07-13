@@ -22,7 +22,7 @@ func NewAuthRoutes(echo *echo.Echo, authCtr controllers.AuthController) *AuthRou
 // InitAuthRoutes initializes the authentication routes.
 func (routes *AuthRoutes) InitAuthRoutes() {
 	e := routes.echo
-	auth := e.Group("/auth")
-	auth.POST("/sign-up", routes.authCtr.Signup)
-	auth.POST("/login", routes.authCtr.Login)
+	v1 := e.Group("/v1")
+	v1.POST("/auth/sign-up", routes.authCtr.Signup)
+	v1.POST("/auth/login", routes.authCtr.Login)
 }
