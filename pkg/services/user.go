@@ -111,7 +111,7 @@ func (userService *userService) GetAllAlumni(page, limit int, jobType, institute
 		alumniInfo.Role = user.Role
 
 		if user.ImagePath != "" {
-			alumniInfo.ImagePath = "http://localhost:9030/get-image/" + user.ImagePath
+			alumniInfo.ImagePath = utils.GetImageUrl(user.ImagePath)
 		} else {
 			alumniInfo.ImagePath = user.ImagePath
 		}
@@ -147,7 +147,7 @@ func (userService *userService) GetAlumni(id string) (*response.AlumniInfoForUse
 	customizedResponse.Role = user.Role
 
 	if user.ImagePath != "" {
-		customizedResponse.ImagePath = "http://localhost:9030/get-image/" + user.ImagePath
+		customizedResponse.ImagePath = utils.GetImageUrl(user.ImagePath)
 	} else {
 		customizedResponse.ImagePath = user.ImagePath
 	}

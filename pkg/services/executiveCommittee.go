@@ -5,6 +5,7 @@ import (
 	"alumni-management-server/pkg/models"
 	"alumni-management-server/pkg/repositories"
 	"alumni-management-server/pkg/serializer"
+	"alumni-management-server/pkg/utils"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -182,7 +183,7 @@ func (executiveCommitteeService *ExecutiveCommitteeService) GetAllMember() ([]re
 			Name:        member.Name,
 			Designation: member.Designation,
 			Email:       member.Email,
-			Image:       "http://localhost:9030/get-image/" + member.ImagePath,
+			Image:       utils.GetImageUrl(member.ImagePath),
 		}
 		responses = append(responses, responseMember)
 	}

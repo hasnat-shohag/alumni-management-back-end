@@ -177,6 +177,9 @@ func (eventService *EventService) FindById(id int) (*models.Event, error) {
 		logger.Error(err)
 		return nil, fmt.Errorf("error: %s", err)
 	}
+
+	event.ImagePath = utils.GetImageUrl(event.ImagePath)
+
 	return &event, nil
 }
 
@@ -186,5 +189,10 @@ func (eventService *EventService) FindAll() (*[]models.Event, error) {
 		logger.Error(err)
 		return nil, fmt.Errorf("error: %s", err)
 	}
+
+	for i, event := range *events {
+		(*events)[i].ImagePath = utils.GetImageUrl(event.ImagePath)
+	}
+
 	return events, nil
 }

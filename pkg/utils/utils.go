@@ -69,3 +69,7 @@ func GenerateRandomNumberOfSixDigit() int64 {
 	random := r.Intn(900000) + 100000
 	return int64(random)
 }
+
+func GetImageUrl(imagePath string) string {
+	return "http://localhost:9030/get-image/" + imagePath
+}
