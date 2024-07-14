@@ -63,7 +63,7 @@ func (eventRepo *EventRepo) Delete(id int) (int, error) {
 
 func (eventRepo *EventRepo) FindAll() (*[]models.Event, error) {
 	events := []models.Event{}
-	if err := eventRepo.db.Table("events").Where("is_deleted = ?", false).Find(&events).Error; err != nil {
+	if err := eventRepo.db.Table("events").Where("is_deleted = ?", false).Order("event_date desc, start_time desc").Find(&events).Error; err != nil {
 		return nil, err
 	}
 	return &events, nil

@@ -71,5 +71,5 @@ func GenerateRandomNumberOfSixDigit() int64 {
 }
 
 func GetImageUrl(imagePath string) string {
-	return "http://localhost:9030/get-image/" + imagePath
+	return "http://10.5.174.38:9030/get-image/" + imagePath
 }
