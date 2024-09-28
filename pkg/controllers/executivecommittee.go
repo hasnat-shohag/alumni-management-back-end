@@ -14,6 +14,7 @@ type ExecutiveCommitteeControllerInterface interface {
 	Update(context echo.Context) error
 	Delete(context echo.Context) error
 	GetAllMember(context echo.Context) ([]response.ExecutiveCommitteeResponse, error)
+	GetMemberById(context echo.Context) (response.ExecutiveCommitteeResponse, error)
 }
 
 type ExecutiveCommitteeController struct {
@@ -144,6 +145,19 @@ func (executiveCommitteeController *ExecutiveCommitteeController) Update(context
 func (executiveCommitteeController *ExecutiveCommitteeController) GetAllMember(context echo.Context) error {
 	// pass request to the service layer
 	committeeInfo, err := executiveCommitteeController.executiveCommitteeService.GetAllMember()
+	if err != nil {
+		return context.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return context.JSON(http.StatusOK, committeeInfo)
+}
+
+// returns the executive committee member information by id.
+func (executiveCommitteeController *ExecutiveCommitteeController) GetMemberById(context echo.Context) error {
+	id := context.Param("id")
+
+	// pass request to the service layer
+	committeeInfo, err := executiveCommitteeController.executiveCommitteeService.GetMemberById(id)
 	if err != nil {
 		return context.JSON(http.StatusInternalServerError, err.Error())
 	}

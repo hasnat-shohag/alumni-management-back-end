@@ -19,6 +19,7 @@ type ExecutiveCommitteeServiceInterface interface {
 	Update(id string, request *serializer.UpdateCommitteeRequest) error
 	Delete(id string) error
 	GetAllMember() ([]response.ExecutiveCommitteeResponse, error)
+	GetMemberById(id string) (response.ExecutiveCommitteeResponse, error)
 }
 
 type ExecutiveCommitteeService struct {
@@ -190,4 +191,24 @@ func (executiveCommitteeService *ExecutiveCommitteeService) GetAllMember() ([]re
 
 	return responses, nil
 
+}
+
+// GetExecutiveCommitteeMemberById returns the executive committee member information by id.
+func (executiveCommitteeService *ExecutiveCommitteeService) GetMemberById(id string) (response.ExecutiveCommitteeResponse, error) {
+	// pass the request to the repository layer
+	executiveCommitteeMember, err := executiveCommitteeService.executiveCommitteeRepo.FindBy("id", id)
+	if err != nil {
+		return response.ExecutiveCommitteeResponse{}, err
+	}
+
+	responseMember := response.ExecutiveCommitteeResponse{
+		ID:          strconv.Itoa(int(executiveCommitteeMember.ID)),
+		Role:        executiveCommitteeMember.Role,
+		Name:        executiveCommitteeMember.Name,
+		Designation: executiveCommitteeMember.Designation,
+		Email:       executiveCommitteeMember.Email,
+		Image:       utils.GetImageUrl(executiveCommitteeMember.ImagePath),
+	}
+
+	return responseMember, nil
 }

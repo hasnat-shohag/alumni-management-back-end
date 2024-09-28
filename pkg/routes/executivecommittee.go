@@ -23,6 +23,7 @@ func (routes *ExecutiveCommitteeRoutes) InitExecutiveCommitteeRoutes() {
 	e := routes.echo
 	v1 := e.Group("/v1")
 	v1.GET("/executive-committee/list", routes.executiveCommitteeCtr.GetAllMember)
+	v1.GET("/executive-committee/:id", routes.executiveCommitteeCtr.GetMemberById)
 
 	v1.Use(middlewares.ValidateToken)
 
