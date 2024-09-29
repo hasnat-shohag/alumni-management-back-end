@@ -22,12 +22,15 @@ func NewExecutiveCommitteeRoutes(echo *echo.Echo, executiveCommitteeCtr *control
 func (routes *ExecutiveCommitteeRoutes) InitExecutiveCommitteeRoutes() {
 	e := routes.echo
 	v1 := e.Group("/v1")
-	v1.GET("/executive-committee/list", routes.executiveCommitteeCtr.GetAllMember)
-	v1.GET("/executive-committee/:id", routes.executiveCommitteeCtr.GetMemberById)
 
-	v1.Use(middlewares.ValidateToken)
+	executiveCommittee := v1.Group("/executive-committee")
 
-	v1.POST("/executive-committee/create", routes.executiveCommitteeCtr.Create)
-	v1.PATCH("/executive-committee/update/:id", routes.executiveCommitteeCtr.Update)
-	v1.DELETE("/executive-committee/delete/:id", routes.executiveCommitteeCtr.Delete)
+	executiveCommittee.GET("/list", routes.executiveCommitteeCtr.GetAllMember)
+	executiveCommittee.GET("/:id", routes.executiveCommitteeCtr.GetMemberById)
+
+	executiveCommittee.Use(middlewares.ValidateToken)
+
+	executiveCommittee.POST("/create", routes.executiveCommitteeCtr.Create)
+	executiveCommittee.PATCH("/update/:id", routes.executiveCommitteeCtr.Update)
+	executiveCommittee.DELETE("/delete/:id", routes.executiveCommitteeCtr.Delete)
 }

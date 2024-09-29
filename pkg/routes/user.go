@@ -22,10 +22,13 @@ func (routes *UserRoutes) InitUserRoutes() {
 	e := routes.echo
 	e.GET("/get-image/:image-path", routes.UserCtr.GetImage)
 
-	user := e.Group("/user")
+	v1 := e.Group("/v1")
+	v1.GET("/ping", routes.UserCtr.Ping)
+
+	user := v1.Group("/user")
+
 	user.POST("/forget-password", routes.UserCtr.ForgetPassword)
 	user.POST("/reset-password", routes.UserCtr.ResetPassword)
-	user.GET("/ping", routes.UserCtr.Ping)
 
 	user.Use(middlewares.ValidateToken)
 

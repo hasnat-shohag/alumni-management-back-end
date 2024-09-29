@@ -25,8 +25,9 @@ func (routes *AdminRoutes) InitAdminRoutes() {
 	e := routes.echo
 	v1 := e.Group("/v1")
 
-	v1.Use(middlewares.ValidateToken)
+	admin := v1.Group("/admin")
+	admin.Use(middlewares.ValidateToken)
 
-	v1.POST("/admin/verify-user/", routes.adminCtr.VerifyUser)
-	v1.DELETE("/admin/delete-user/:id", routes.adminCtr.DeleteUser)
+	admin.POST("/verify-user/", routes.adminCtr.VerifyUser)
+	admin.DELETE("/delete-user/:id", routes.adminCtr.DeleteUser)
 }

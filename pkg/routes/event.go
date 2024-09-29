@@ -22,10 +22,12 @@ func (routes *EventRoutes) InitEventRoutes() {
 	e := routes.echo
 	v1 := e.Group("/v1")
 
-	v1.Use(middlewares.ValidateToken)
-	v1.POST("/event/create", routes.eventCtr.Create)
-	v1.PATCH("/event/update/:id", routes.eventCtr.Update)
-	v1.DELETE("/event/delete/:id", routes.eventCtr.Delete)
-	v1.GET("/event/:id", routes.eventCtr.FindById)
-	v1.GET("/events", routes.eventCtr.FindAll)
+	event := v1.Group("/event")
+	event.Use(middlewares.ValidateToken)
+
+	event.POST("/create", routes.eventCtr.Create)
+	event.PATCH("/update/:id", routes.eventCtr.Update)
+	event.DELETE("/delete/:id", routes.eventCtr.Delete)
+	event.GET("/:id", routes.eventCtr.FindById)
+	event.GET("", routes.eventCtr.FindAll)
 }
