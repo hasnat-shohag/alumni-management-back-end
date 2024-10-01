@@ -48,6 +48,12 @@ func migrate() {
 		fmt.Println("Error migrating DB")
 		panic(err)
 	}
+
+	// create blog table
+	if err := db.Migrator().AutoMigrate(&models.Blog{}); err != nil {
+		fmt.Println("Error migrating DB")
+		panic(err)
+	}
 }
 
 // function for getting db instance

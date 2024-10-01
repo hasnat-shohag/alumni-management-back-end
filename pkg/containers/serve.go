@@ -34,6 +34,11 @@ func Serve(e *echo.Echo) {
 	executiveCommitteeService := services.NewExecutiveCommitteeService(&executiveCommitteeRepository)
 	executiveCommitteeController := controllers.NewExecutiveCommitteeController(&executiveCommitteeService)
 
+	// Blog module initialization
+	blogRepository := repositories.NewBlogRepo(db)
+	blogService := services.NewBlogService(&blogRepository)
+	blogController := controllers.NewBlogController(&blogService)
+
 	// repository initialization
 	authRepository := repositories.AuthDBInstance(db)
 	adminRepository := repositories.AdminDBInstance(db)
@@ -55,12 +60,14 @@ func Serve(e *echo.Echo) {
 	userRoutes := routes.NewUserRoutes(e, userController)
 	eventRoutes := routes.NewEventRoutes(e, &eventController)
 	executiveCommitteeRoutes := routes.NewExecutiveCommitteeRoutes(e, &executiveCommitteeController)
+	blogRoutes := routes.NewBlogRoutes(e, &blogController)
 
 	authRoutes.InitAuthRoutes()
 	adminRoutes.InitAdminRoutes()
 	userRoutes.InitUserRoutes()
 	eventRoutes.InitEventRoutes()
 	executiveCommitteeRoutes.InitExecutiveCommitteeRoutes()
+	blogRoutes.InitBlogRoutes()
 
 	// starting server
 	log.Fatal(e.Start(fmt.Sprintf(":%s", config.LocalConfig.Port)))
